@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baizid Kharis | Luxury Minimalist Portfolio</title>
+  <meta name="description" content="Personal portfolio of Baizid Kharis. AI Filmmaking, Content Creation, Automation, and Digital Storytelling based in Dubai.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Custom Cursor elements -->
+  <div id="cursor-dot" class="cursor"></div>
+  <div id="cursor-ring" class="cursor"></div>
+
+  <!-- Background Particle Canvas -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <!-- Glassmorphic Header / Nav -->
+  <nav class="nav" id="main-nav">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">BAIZID</a>
+      <div class="nav-links">
+        <a href="#about" class="nav-link">About</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </div>
+      <button class="nav-menu-btn" id="menu-btn" aria-label="Toggle Menu">
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Overlay Navigation Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-links">
+      <a href="#about" class="mobile-menu-link">About</a>
+      <a href="#projects" class="mobile-menu-link">Projects</a>
+      <a href="#skills" class="mobile-menu-link">Skills</a>
+      <a href="#gallery" class="mobile-menu-link">Gallery</a>
+      <a href="#contact" class="mobile-menu-link">Contact</a>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section id="hero" class="hero-section">
+    <div class="hero-parallax-bg" id="hero-parallax"></div>
+    <div class="hero-container">
+      <div class="hero-content">
+        <span class="hero-eyebrow">PORTFOLIO &lsquo;26</span>
+        <h1 class="hero-title">
+          <span class="hero-title-line"><span class="hero-title-inner">BAIZID</span></span>
+          <span class="hero-title-line"><span class="hero-title-inner">KHARIS</span></span>
+        </h1>
+        <p class="hero-subtitle">Visual Storyteller &amp; AI Filmmaker</p>
+        <div class="hero-scroll-indicator">
+          <div class="scroll-track">
+            <span class="scroll-dot"></span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image-container">
+        <img src="hero.jpg" class="hero-img" alt="Baizid Kharis portrait, dramatic warm amber rim lighting">
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee Divider -->
+  <div class="marquee-divider" id="marquee">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        Content Creation <span class="gold-star">✦</span> AI Filmmaking <span class="gold-star">✦</span> Automation <span class="gold-star">✦</span> Digital Storytelling <span class="gold-star">✦</span> Veo 3 <span class="gold-star">✦</span> Based in Dubai&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+      <div class="marquee-content">
+        Content Creation <span class="gold-star">✦</span> AI Filmmaking <span class="gold-star">✦</span> Automation <span class="gold-star">✦</span> Digital Storytelling <span class="gold-star">✦</span> Veo 3 <span class="gold-star">✦</span> Based in Dubai&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+      <div class="marquee-content">
+        Content Creation <span class="gold-star">✦</span> AI Filmmaking <span class="gold-star">✦</span> Automation <span class="gold-star">✦</span> Digital Storytelling <span class="gold-star">✦</span> Veo 3 <span class="gold-star">✦</span> Based in Dubai&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+      <div class="marquee-content">
+        Content Creation <span class="gold-star">✦</span> AI Filmmaking <span class="gold-star">✦</span> Automation <span class="gold-star">✦</span> Digital Storytelling <span class="gold-star">✦</span> Veo 3 <span class="gold-star">✦</span> Based in Dubai&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-image-wrapper reveal-left" id="about-image-wrapper">
+          <img src="about.jpg" class="about-img" loading="lazy" alt="Close-up portrait of Baizid Kharis under warm golden hour light">
+        </div>
+        <div class="about-text-wrapper reveal-right" id="about-text-wrapper">
+          <h2 class="section-title">Crafting the Future of Cinema</h2>
+          <p class="lead-text">I merge cinematic artistry with cutting-edge artificial intelligence to build immersive digital experiences.</p>
+          <p class="body-text">Based in Dubai, I collaborate with luxury brands, tech innovators, and visionary creators globally. My workflow integrates AI generation tools like Veo 3 with classic cinematography principles to deliver next-generation content pipelines.</p>
+          <div class="about-metrics">
+            <div class="metric">
+              <span class="metric-num">5+</span>
+              <span class="metric-label">Years Experience</span>
+            </div>
+            <div class="metric">
+              <span class="metric-num">50M+</span>
+              <span class="metric-label">Collective Views</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section (List Layout) -->
+  <section id="projects" class="projects-section">
+    <div class="container">
+      <h2 class="section-title-alt">Selected Projects</h2>
+      <div class="projects-list">
+        
+        <div class="project-row" data-thumbnail="project1">
+          <span class="project-index">01</span>
+          <h3 class="project-title">Veo 3 Cinematic Short</h3>
+          <span class="project-category">AI Filmmaking</span>
+          <span class="project-arrow">↗</span>
+          <img src="project1.jpg" class="project-thumbnail-float" loading="lazy" alt="Veo 3 Cinematic Short - Futuristic Mars landscape with astronaut silhouette">
+        </div>
+
+        <div class="project-row" data-thumbnail="project2">
+          <span class="project-index">02</span>
+          <h3 class="project-title">Desert Mirage Fashion</h3>
+          <span class="project-category">Creative Direction</span>
+          <span class="project-arrow">↗</span>
+          <img src="project2.jpg" class="project-thumbnail-float" loading="lazy" alt="Desert Mirage Fashion - Abstract dark tech interface with glowing gold data streams">
+        </div>
+
+        <div class="project-row" data-thumbnail="project3">
+          <span class="project-index">03</span>
+          <h3 class="project-title">Neo-Dubai Nocturnes</h3>
+          <span class="project-category">Digital Storytelling</span>
+          <span class="project-arrow">↗</span>
+          <img src="project3.jpg" class="project-thumbnail-float" loading="lazy" alt="Neo-Dubai Nocturnes - A Dubai café interior with warm amber lighting and bokeh">
+        </div>
+
+        <div class="project-row" data-thumbnail="project4">
+          <span class="project-index">04</span>
+          <h3 class="project-title">Automated Media Workflows</h3>
+          <span class="project-category">Automation</span>
+          <span class="project-arrow">↗</span>
+          <img src="project4.jpg" class="project-thumbnail-float" loading="lazy" alt="Automated Media Workflows - Moody servers and modern screen editing suite">
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills" class="skills-section">
+    <div class="container">
+      <div class="skills-grid">
+        
+        <div class="skills-column reveal-up" id="skills-col-1">
+          <h3 class="skills-column-title">Creative Direction</h3>
+          <div class="skills-list">
+            <div class="skill-item">
+              <h4 class="skill-name">AI Filmmaking &amp; Editing</h4>
+              <p class="skill-desc">Directing narratives with Sora, Veo 3, and Runway Gen-3 workflows.</p>
+            </div>
+            <div class="skill-item">
+              <h4 class="skill-name">Cinematography</h4>
+              <p class="skill-desc">Expert in camera logic, natural lighting, and luxury aesthetics.</p>
+            </div>
+            <div class="skill-item">
+              <h4 class="skill-name">Visual Storytelling</h4>
+              <p class="skill-desc">Constructing high-impact emotional beats and storyboards.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="skills-column reveal-up" id="skills-col-2">
+          <h3 class="skills-column-title">Technical Operations</h3>
+          <div class="skills-list">
+            <div class="skill-item">
+              <h4 class="skill-name">Media Pipelines</h4>
+              <p class="skill-desc">Automated ingestion, cloud processing, and multi-platform publishing.</p>
+            </div>
+            <div class="skill-item">
+              <h4 class="skill-name">Advanced Color Grading</h4>
+              <p class="skill-desc">DaVinci Resolve grading calibrated for cinema and luxury HDR.</p>
+            </div>
+            <div class="skill-item">
+              <h4 class="skill-name">Generative Art Engines</h4>
+              <p class="skill-desc">Custom diffusion models, fine-tuning, and prompt optimization.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="skills-column reveal-up" id="skills-col-3">
+          <h3 class="skills-column-title">Digital Strategy</h3>
+          <div class="skills-list">
+            <div class="skill-item">
+              <h4 class="skill-name">Viral Growth Logic</h4>
+              <p class="skill-desc">Algorithmic distribution matching luxury brand parameters.</p>
+            </div>
+            <div class="skill-item">
+              <h4 class="skill-name">Automation Architecture</h4>
+              <p class="skill-desc">Integrations utilizing Make, Zapier, and Python for content syndication.</p>
+            </div>
+            <div class="skill-item">
+              <h4 class="skill-name">Brand Consulting</h4>
+              <p class="skill-desc">Transforming traditional PR campaigns into digital-native stories.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section id="gallery" class="gallery-section">
+    <div class="gallery-wrapper">
+      <div class="gallery-track" id="gallery-track">
+        
+        <div class="gallery-item">
+          <img src="gallery1.jpg" class="gallery-img" loading="lazy" alt="Neon city reflections on a wet street at night">
+        </div>
+
+        <div class="gallery-item">
+          <img src="gallery2.jpg" class="gallery-img" loading="lazy" alt="Architectural shadows with golden sun light rays piercing pillars">
+        </div>
+
+        <div class="gallery-item">
+          <img src="gallery3.jpg" class="gallery-img" loading="lazy" alt="Close-up of photographer's hands adjusting vintage camera dial">
+        </div>
+
+        <div class="gallery-item">
+          <img src="gallery4.jpg" class="gallery-img" loading="lazy" alt="Dramatic wind-blown desert sand dunes at dusk with twilight glow">
+        </div>
+
+        <div class="gallery-item">
+          <img src="gallery5.jpg" class="gallery-img" loading="lazy" alt="Silhouette of a person standing against a deep gold sunset sky">
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section (Dark Theme) -->
+  <section id="contact" class="contact-section">
+    <div class="contact-glow"></div>
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h2 class="contact-title">Start a Project</h2>
+          <p class="contact-desc">Let's discuss how we can elevate your brand with advanced visual styling.</p>
+          <div class="contact-email-wrapper">
+            <a href="mailto:hello@baizid.com" class="contact-email" id="typewriter-email">hello@baizid.com</a>
+          </div>
+          <div class="social-links">
+            <a href="#" class="social-link">Instagram</a>
+            <a href="#" class="social-link">YouTube</a>
+            <a href="#" class="social-link">LinkedIn</a>
+            <a href="#" class="social-link">Vimeo</a>
+          </div>
+        </div>
+        
+        <div class="contact-form-container">
+          <!-- 
+            Formspree integration is required. 
+            To activate this form, sign up on Formspree, create a form, 
+            and replace the form attributes below with:
+            <form action="https://formspree.io/f/your_form_id" method="POST"> 
+          -->
+          <form class="contact-form" onsubmit="event.preventDefault();">
+            <div class="form-group">
+              <label for="form-name">Name</label>
+              <input type="text" id="form-name" name="name" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+              <label for="form-email">Email</label>
+              <input type="email" id="form-email" name="email" placeholder="hello@domain.com" required>
+            </div>
+            <div class="form-group">
+              <label for="form-message">Message</label>
+              <textarea id="form-message" name="message" rows="4" placeholder="Tell me about your vision..." required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Script -->
+  <script src="script.js"></script>
+</body>
+</html>
