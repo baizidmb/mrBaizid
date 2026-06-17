@@ -3,39 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baizid Kharis | Luxury Minimalist Portfolio</title>
-  <meta name="description" content="Personal portfolio of Baizid Kharis. AI Filmmaking, Content Creation, Automation, and Digital Storytelling based in Dubai.">
+  <title>Baizid | AI Filmmaking &amp; Automation Architecture</title>
+  <meta name="description" content="Portfolio of Baizid. Creative AI director, Veo 3 filmmaker, and headless content syndication systems builder. Based in Dubai.">
   
-  <!-- Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
   
   <!-- Styling -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <!-- Custom Cursor elements -->
-  <div id="cursor-dot" class="cursor"></div>
-  <div id="cursor-ring" class="cursor"></div>
-
-  <!-- Background Particle Canvas -->
-  <canvas id="particle-canvas"></canvas>
+  <!-- Global WebGL Background Canvas -->
+  <canvas id="global-3d-canvas" class="global-3d-canvas"></canvas>
 
   <!-- Scroll Progress Bar -->
   <div id="scroll-progress"></div>
 
-  <!-- Glassmorphic Header / Nav -->
+  <!-- Header / Navigation -->
   <nav class="nav" id="main-nav">
     <div class="nav-container">
-      <a href="#" class="nav-logo">BAIZID</a>
+      <a href="#" class="nav-logo" id="nav-logo-3d">
+        <span>B</span><span>A</span><span>I</span><span>Z</span><span>I</span><span>D</span>
+      </a>
       <div class="nav-links">
-        <a href="#about" class="nav-link">About</a>
-        <a href="#projects" class="nav-link">Projects</a>
-        <a href="#skills" class="nav-link">Skills</a>
-        <a href="#gallery" class="nav-link">Gallery</a>
-        <a href="#contact" class="nav-link">Contact</a>
+        <a href="#build" class="nav-link"><span class="nav-link-inner"><span class="nav-link-front">What I Build</span><span class="nav-link-back">What I Build</span></span></a>
+        <a href="#neural-tunnel" class="nav-link"><span class="nav-link-inner"><span class="nav-link-front">Tunnel</span><span class="nav-link-back">Tunnel</span></span></a>
+        <a href="#avatar-story" class="nav-link"><span class="nav-link-inner"><span class="nav-link-front">The Avatar</span><span class="nav-link-back">The Avatar</span></span></a>
+        <a href="#destinies" class="nav-link"><span class="nav-link-inner"><span class="nav-link-front">Destinies</span><span class="nav-link-back">Destinies</span></span></a>
+        <a href="#stack" class="nav-link"><span class="nav-link-inner"><span class="nav-link-front">Stack</span><span class="nav-link-back">Stack</span></span></a>
+        <a href="#contact" class="nav-link"><span class="nav-link-inner"><span class="nav-link-front">Contact</span><span class="nav-link-back">Contact</span></span></a>
       </div>
       <button class="nav-menu-btn" id="menu-btn" aria-label="Toggle Menu">
         <span></span>
@@ -47,179 +45,458 @@
   <!-- Mobile Overlay Navigation Menu -->
   <div class="mobile-menu" id="mobile-menu">
     <div class="mobile-menu-links">
-      <a href="#about" class="mobile-menu-link">About</a>
-      <a href="#projects" class="mobile-menu-link">Projects</a>
-      <a href="#skills" class="mobile-menu-link">Skills</a>
-      <a href="#gallery" class="mobile-menu-link">Gallery</a>
+      <a href="#build" class="mobile-menu-link">What I Build</a>
+      <a href="#neural-tunnel" class="mobile-menu-link">Neural Tunnel</a>
+      <a href="#avatar-story" class="mobile-menu-link">The Avatar</a>
+      <a href="#destinies" class="mobile-menu-link">Destinies</a>
+      <a href="#stack" class="mobile-menu-link">Stack</a>
       <a href="#contact" class="mobile-menu-link">Contact</a>
     </div>
   </div>
 
-  <!-- Hero Section -->
+  <!-- 1. HERO SECTION (Cinematic Establishing Shot) -->
   <section id="hero" class="hero-section">
-    <div class="hero-parallax-bg" id="hero-parallax"></div>
+    <!-- Full-bleed background image with slow parallax scroll -->
+    <div class="hero-image-wrapper">
+      <div class="hero-image-parallax" id="hero-img-parallax"></div>
+    </div>
+    
     <div class="hero-container">
-      <div class="hero-content">
-        <span class="hero-eyebrow">PORTFOLIO &lsquo;26</span>
-        <h1 class="hero-title">
-          <span class="hero-title-line"><span class="hero-title-inner">BAIZID</span></span>
-          <span class="hero-title-line"><span class="hero-title-inner">KHARIS</span></span>
+      <div class="hero-content" id="hero-text-wrap">
+        <span class="hero-eyebrow" id="hero-eyebrow-node">BAIZID &bull; PORTFOLIO &lsquo;26</span>
+        <h1 class="hero-title" id="hero-title-node">
+          <span class="text-line"><span>SCULPTING</span></span>
+          <span class="text-line"><span>NEW DIGITAL</span></span>
+          <span class="text-line"><span class="accent-text">REALITIES.</span></span>
         </h1>
-        <p class="hero-subtitle">Visual Storyteller &amp; AI Filmmaker</p>
-        <div class="hero-scroll-indicator">
-          <div class="scroll-track">
-            <span class="scroll-dot"></span>
+        <p class="hero-subtitle" id="hero-subtitle-node">
+          Directing cinematic stories with Veo 3 and building automated syndication networks.
+        </p>
+      </div>
+      <div class="hero-visual" id="hero-visual-node">
+        <div class="hero-portrait-card browser-frame">
+          <div class="browser-header">
+            <div class="browser-dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="browser-address">baizid-portrait.jpg</div>
           </div>
-        </div>
-      </div>
-      <div class="hero-image-container">
-        <img src="hero.jpg" class="hero-img" alt="Baizid Kharis portrait, dramatic warm amber rim lighting">
-      </div>
-    </div>
-  </section>
-
-  <!-- Marquee Divider -->
-  <div class="marquee-divider" id="marquee">
-    <div class="marquee-track">
-      <div class="marquee-content">
-        Content Creation <span class="gold-star">✦</span> AI Filmmaking <span class="gold-star">✦</span> Automation <span class="gold-star">✦</span> Digital Storytelling <span class="gold-star">✦</span> Veo 3 <span class="gold-star">✦</span> Based in Dubai&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      </div>
-      <div class="marquee-content">
-        Content Creation <span class="gold-star">✦</span> AI Filmmaking <span class="gold-star">✦</span> Automation <span class="gold-star">✦</span> Digital Storytelling <span class="gold-star">✦</span> Veo 3 <span class="gold-star">✦</span> Based in Dubai&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      </div>
-      <div class="marquee-content">
-        Content Creation <span class="gold-star">✦</span> AI Filmmaking <span class="gold-star">✦</span> Automation <span class="gold-star">✦</span> Digital Storytelling <span class="gold-star">✦</span> Veo 3 <span class="gold-star">✦</span> Based in Dubai&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      </div>
-      <div class="marquee-content">
-        Content Creation <span class="gold-star">✦</span> AI Filmmaking <span class="gold-star">✦</span> Automation <span class="gold-star">✦</span> Digital Storytelling <span class="gold-star">✦</span> Veo 3 <span class="gold-star">✦</span> Based in Dubai&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      </div>
-    </div>
-  </div>
-
-  <!-- About Section -->
-  <section id="about" class="about-section">
-    <div class="container">
-      <div class="about-grid">
-        <div class="about-image-wrapper reveal-left" id="about-image-wrapper">
-          <img src="about.jpg" class="about-img" loading="lazy" alt="Close-up portrait of Baizid Kharis under warm golden hour light">
-        </div>
-        <div class="about-text-wrapper reveal-right" id="about-text-wrapper">
-          <h2 class="section-title">Crafting the Future of Cinema</h2>
-          <p class="lead-text">I merge cinematic artistry with cutting-edge artificial intelligence to build immersive digital experiences.</p>
-          <p class="body-text">Based in Dubai, I collaborate with luxury brands, tech innovators, and visionary creators globally. My workflow integrates AI generation tools like Veo 3 with classic cinematography principles to deliver next-generation content pipelines.</p>
-          <div class="about-metrics">
-            <div class="metric">
-              <span class="metric-num">5+</span>
-              <span class="metric-label">Years Experience</span>
-            </div>
-            <div class="metric">
-              <span class="metric-num">50M+</span>
-              <span class="metric-label">Collective Views</span>
-            </div>
+          <div class="browser-body">
+            <img src="about.jpg?v=1781733150412" alt="Baizid Portrait" class="hero-portrait-img">
           </div>
         </div>
       </div>
     </div>
+    
+    <div class="hero-scroll-indicator" id="hero-scroll-node">
+      <div class="scroll-track">
+        <span class="scroll-dot"></span>
+      </div>
+      <span class="scroll-label">Scroll to explore</span>
+    </div>
   </section>
 
-  <!-- Projects Section (List Layout) -->
-  <section id="projects" class="projects-section">
-    <div class="container">
-      <h2 class="section-title-alt">Selected Projects</h2>
-      <div class="projects-list">
+  <!-- 1.5 THE NEURAL TUNNEL (Scroll-Linked 3D Portal Flight) -->
+  <section id="neural-tunnel" class="tunnel-section">
+    <div class="tunnel-sticky-container" id="tunnel-sticky">
+      <div class="tunnel-header">
+        <span class="section-eyebrow">3D Neural Portal</span>
+        <h2 class="section-title">The Neural Tunnel</h2>
+        <p class="section-subtitle-3d">Scroll to fly through Baizid's automated generative matrix.</p>
+      </div>
+      
+      <!-- 3D Perspective Tunnel Stage -->
+      <div class="tunnel-stage">
+        <div class="tunnel-container" id="tunnel-container">
+          
+          <!-- Segment 1: Signal Zero -->
+          <div class="tunnel-ring" data-z="-500">
+            <div class="ring-content left">
+              <img src="project1.jpg" alt="Signal Zero Martian Still">
+              <span class="ring-label">SIGNAL ZERO / VEO 3</span>
+            </div>
+            <div class="ring-hud right">
+              <span class="hud-code">seed: 8492048512</span>
+              <span class="hud-status">STATUS: RENDER_STABLE</span>
+            </div>
+          </div>
+
+          <!-- Segment 2: Café Clones -->
+          <div class="tunnel-ring" data-z="-1000">
+            <div class="ring-content right">
+              <img src="project3.jpg" alt="Dubai café clones dialogue still">
+              <span class="ring-label">CLONE_DUPLICATION_A/B</span>
+            </div>
+            <div class="ring-hud left">
+              <span class="hud-code">trolley_problem_solved = false</span>
+              <span class="hud-status">DIFFERENCE: 0.00%</span>
+            </div>
+          </div>
+
+          <!-- Segment 3: Automation Node -->
+          <div class="tunnel-ring" data-z="-1500">
+            <div class="ring-content left">
+              <img src="project4.jpg" alt="N8N Node Workflow">
+              <span class="ring-label">N8N_WORKFLOW_INGESTION</span>
+            </div>
+            <div class="ring-hud right">
+              <span class="hud-code">cron: */60 * * * *</span>
+              <span class="hud-status">UPLOADING REEL_0492.MP4</span>
+            </div>
+          </div>
+
+          <!-- Segment 4: Pinterest SEO -->
+          <div class="tunnel-ring" data-z="-2000">
+            <div class="ring-content right">
+              <img src="project2.jpg" alt="Pinterest search evergreen traffic">
+              <span class="ring-label">PINTEREST_SEO_MATRIX</span>
+            </div>
+            <div class="ring-hud left">
+              <span class="hud-code">traffic_generation: evergreen</span>
+              <span class="hud-status">MONETIZED via GUMROAD + MAKE</span>
+            </div>
+          </div>
+
+          <!-- Segment 5: Philosophy & Gym -->
+          <div class="tunnel-ring" data-z="-2500">
+            <div class="ring-content left">
+              <img src="about.jpg?v=1781733150412" alt="Fitness and Philosophy still">
+              <span class="ring-label">PHILOSOPHY &amp; LIFTING</span>
+            </div>
+            <div class="ring-hud right">
+              <span class="hud-code">trolley_weight = 405_lbs</span>
+              <span class="hud-status">SPARRING_PARTNER: DEPRECATED</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. WHAT I BUILD (Horizontal Pinned Showcase) -->
+  <section id="build" class="build-section">
+    <div class="build-sticky-container" id="build-sticky">
+      <div class="build-section-header">
+        <span class="section-eyebrow">Work &amp; Operations</span>
+        <h2 class="section-title">What I Build</h2>
+      </div>
+      
+      <div class="build-horizontal-track" id="build-track">
         
-        <div class="project-row" data-thumbnail="project1">
-          <span class="project-index">01</span>
-          <h3 class="project-title">Veo 3 Cinematic Short</h3>
-          <span class="project-category">AI Filmmaking</span>
-          <span class="project-arrow">↗</span>
-          <img src="project1.jpg" class="project-thumbnail-float" loading="lazy" alt="Veo 3 Cinematic Short - Futuristic Mars landscape with astronaut silhouette">
+        <!-- Card 1: Signal Zero (Flagship Film) -->
+        <div class="project-card-wrapper">
+          <div class="browser-frame">
+            <div class="browser-header">
+              <div class="browser-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="browser-address">signal-zero.ai</div>
+            </div>
+            <div class="browser-body">
+              <img src="project1.jpg" alt="Signal Zero AI film survival still">
+              <div class="card-overlay">
+                <div class="card-meta">
+                  <span class="card-tag">Flagship Project</span>
+                  <span class="card-tag">Veo 3</span>
+                </div>
+                <h3 class="card-title">Signal Zero</h3>
+                <p class="card-description">
+                  A 15-scene AI-generated sci-fi short film tracking a survival story on Mars. Solved actor continuity and scene-to-scene coherence by guiding generative diffusions with consistent seed structures.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="project-row" data-thumbnail="project2">
-          <span class="project-index">02</span>
-          <h3 class="project-title">Desert Mirage Fashion</h3>
-          <span class="project-category">Creative Direction</span>
-          <span class="project-arrow">↗</span>
-          <img src="project2.jpg" class="project-thumbnail-float" loading="lazy" alt="Desert Mirage Fashion - Abstract dark tech interface with glowing gold data streams">
+        <!-- Card 2: Do You Know? (Café Dialogues) -->
+        <div class="project-card-wrapper">
+          <div class="browser-frame">
+            <div class="browser-header">
+              <div class="browser-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="browser-address">dubaicafe.twin</div>
+            </div>
+            <div class="browser-body">
+              <img src="project3.jpg" alt="Dubai café clones dialogue still">
+              <div class="card-overlay">
+                <div class="card-meta">
+                  <span class="card-tag">Recurring Series</span>
+                  <span class="card-tag">Double Avatar</span>
+                </div>
+                <h3 class="card-title">"Do You Know?" Series</h3>
+                <p class="card-description">
+                  A two-clone conversation format shot in a Dubai café aesthetic. Uses duplicate AI avatars to debate philosophical dilemmas and trolley problems, written with dry, deadpan humor.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="project-row" data-thumbnail="project3">
-          <span class="project-index">03</span>
-          <h3 class="project-title">Neo-Dubai Nocturnes</h3>
-          <span class="project-category">Digital Storytelling</span>
-          <span class="project-arrow">↗</span>
-          <img src="project3.jpg" class="project-thumbnail-float" loading="lazy" alt="Neo-Dubai Nocturnes - A Dubai café interior with warm amber lighting and bokeh">
+        <!-- Card 3: N8N Pipeline (Automation Engine) -->
+        <div class="project-card-wrapper">
+          <div class="browser-frame">
+            <div class="browser-header">
+              <div class="browser-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="browser-address">n8n.upload-pipeline</div>
+            </div>
+            <div class="browser-body">
+              <img src="project4.jpg" alt="N8N media workflow interface mockup">
+              <div class="card-overlay">
+                <div class="card-meta">
+                  <span class="card-tag">System Architecture</span>
+                  <span class="card-tag">Zero-Manual</span>
+                </div>
+                <h3 class="card-title">N8N syndication</h3>
+                <p class="card-description">
+                  A daily automation pipeline publishing Reels and Shorts directly to social platforms. Handshakes prompt expansion, video rendering, localized voiceovers, and scheduled uploads.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="project-row" data-thumbnail="project4">
-          <span class="project-index">04</span>
-          <h3 class="project-title">Automated Media Workflows</h3>
-          <span class="project-category">Automation</span>
-          <span class="project-arrow">↗</span>
-          <img src="project4.jpg" class="project-thumbnail-float" loading="lazy" alt="Automated Media Workflows - Moody servers and modern screen editing suite">
+        <!-- Card 4: Pinterest Engine (Passive Income) -->
+        <div class="project-card-wrapper">
+          <div class="browser-frame">
+            <div class="browser-header">
+              <div class="browser-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="browser-address">pinterest-funnel.live</div>
+            </div>
+            <div class="browser-body">
+              <img src="project2.jpg" alt="Pinterest search engine automation layout">
+              <div class="card-overlay">
+                <div class="card-meta">
+                  <span class="card-tag">Growth Systems</span>
+                  <span class="card-tag">Gumroad + Make</span>
+                </div>
+                <h3 class="card-title">Pinterest Funnel</h3>
+                <p class="card-description">
+                  Treats Pinterest as a search engine to generate evergreen organic traffic. Automates canvas creation via Canva, landing pages via Beacons.ai, and monetization via Gumroad digital products.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
     </div>
   </section>
 
-  <!-- Skills Section -->
-  <section id="skills" class="skills-section">
+  <!-- 3. THE AVATAR (Scroll-Triggered Storytelling Sequence) -->
+  <section id="avatar-story" class="avatar-story-section">
+    <div class="avatar-sticky-container" id="avatar-sticky">
+      <div class="avatar-grid-wrapper">
+        
+        <!-- Left Column: Story Images (Crossfading & Scaling) -->
+        <div class="avatar-visual-column">
+          <div class="avatar-image-container" id="avatar-img-container">
+            <!-- Slide 1 -->
+            <div class="avatar-slide-img active" data-slide="1">
+              <img src="about.jpg?v=1781733150412" alt="AI avatar base geometry mapping">
+            </div>
+            <!-- Slide 2 -->
+            <div class="avatar-slide-img" data-slide="2">
+              <img src="gallery1.jpg" alt="Mars survival consistency render">
+            </div>
+            <!-- Slide 3 -->
+            <div class="avatar-slide-img" data-slide="3">
+              <img src="gallery5.jpg" alt="Double clone café talking heads">
+            </div>
+            <!-- Slide 4 -->
+            <div class="avatar-slide-img" data-slide="4">
+              <img src="gallery2.jpg" alt="Synthesized facial mesh lighting angles">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Story Copy Blocks -->
+        <div class="avatar-text-column" id="avatar-text-col">
+          
+          <!-- Slide 1 -->
+          <div class="avatar-text-panel active" data-slide="1">
+            <span class="panel-num">01 / CHARACTER ARCHITECTURE</span>
+            <h3 class="panel-title">Defining the Digital Identity</h3>
+            <p class="panel-desc">
+              To build a recognizable brand without standard cameras, a stable face is mandatory. I trained a custom diffusion LoRA on a high-res dataset, hard-coding key facial proportions, hair density, and dramatic amber rim lighting into the weights.
+            </p>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="avatar-text-panel" data-slide="2">
+            <span class="panel-num">02 / CONTINUITY CONTROL</span>
+            <h3 class="panel-title">Eliminating Frame Drift</h3>
+            <p class="panel-desc">
+              AI generation is notoriously chaotic across multiple clips. For "Signal Zero," I mapped standard mesh grids onto the actor's face and used frame-guided seed structures inside Veo 3. The character remains coherent through heavy atmospheric filters and dramatic action cuts.
+            </p>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="avatar-text-panel" data-slide="3">
+            <span class="panel-num">03 / DUAL INTERACTION</span>
+            <h3 class="panel-title">The Café Dialogues</h3>
+            <p class="panel-desc">
+              For "Do You Know?", I cloned the digital avatar to create two interacting personalities. They hold deadpan debates on ethics and trolley problems, rendering realistic facial movements, speech pauses, and side-eye angles. No goofy hand gestures, just cold mechanical philosophy.
+            </p>
+          </div>
+
+          <!-- Slide 4 -->
+          <div class="avatar-text-panel" data-slide="4">
+            <span class="panel-num">04 / COMPLETE AUTOMATION</span>
+            <h3 class="panel-title">Self-Running Asset</h3>
+            <p class="panel-desc">
+              The end goal is absolute systemic freedom. The avatar works in tandem with an N8N scheduler, rendering and publishing overnight. It handles the writing, generation, lipsyncing, and uploading without a single human keystroke. A content creator that doesn't sleep.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 3.5 FUTURE DESTINIES (Futuristic 3D Cylinder Carousel) -->
+  <section id="destinies" class="destinies-section">
+    <div class="destinies-sticky-container" id="destinies-sticky">
+      <div class="destinies-header">
+        <span class="section-eyebrow">Interactive 3D Timeline</span>
+        <h2 class="section-title">Future Destinies</h2>
+        <p class="section-subtitle-3d">Every scroll rotates the timeline, projecting a new destiny.</p>
+      </div>
+      
+      <!-- 3D Perspective Stage -->
+      <div class="destiny-stage">
+        <div class="destiny-cylinder" id="destiny-cylinder">
+          
+          <!-- Destiny 1 -->
+          <div class="destiny-card" data-index="0">
+            <div class="destiny-card-glow"></div>
+            <div class="destiny-card-content">
+              <span class="destiny-year">2027</span>
+              <h3 class="destiny-title">Veo 4 Integration</h3>
+              <p class="destiny-desc">
+                Deploying cognitive video models directly into the pipeline. Scripts are analyzed for thematic weight, rendering matching high-fidelity cinematic scenes autonomously.
+              </p>
+            </div>
+          </div>
+
+          <!-- Destiny 2 -->
+          <div class="destiny-card" data-index="1">
+            <div class="destiny-card-glow"></div>
+            <div class="destiny-card-content">
+              <span class="destiny-year">2028</span>
+              <h3 class="destiny-title">Autonomous Agency</h3>
+              <p class="destiny-desc">
+                Spawning complete networks of self-curating digital clone feeds. Autonomous agents debate, refine content strategies, and edit videos dynamically based on real-time audience metrics.
+              </p>
+            </div>
+          </div>
+
+          <!-- Destiny 3 -->
+          <div class="destiny-card" data-index="2">
+            <div class="destiny-card-glow"></div>
+            <div class="destiny-card-content">
+              <span class="destiny-year">2029</span>
+              <h3 class="destiny-title">Neural Storytelling</h3>
+              <p class="destiny-desc">
+                Bypassing prompt syntax. Direct neural-mesh mappings translate mental scene images into structured digital video feeds, creating pure, raw thought cinema.
+              </p>
+            </div>
+          </div>
+
+          <!-- Destiny 4 -->
+          <div class="destiny-card" data-index="3">
+            <div class="destiny-card-glow"></div>
+            <div class="destiny-card-content">
+              <span class="destiny-year">2030</span>
+              <h3 class="destiny-title">Multi-planetary Syndication</h3>
+              <p class="destiny-desc">
+                Syndicating content streams across interplanetary server nodes. Automated data packets optimized for transmission delays, servicing the initial Mars settlement nodes.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. STACK / TOOLS (Parallax Depth Grid) -->
+  <section id="stack" class="stack-section">
     <div class="container">
-      <div class="skills-grid">
+      <div class="stack-header">
+        <span class="section-eyebrow">Engine &amp; Pipes</span>
+        <h2 class="section-title">The Automation Stack</h2>
+      </div>
+      
+      <div class="stack-grid">
         
-        <div class="skills-column reveal-up" id="skills-col-1">
-          <h3 class="skills-column-title">Creative Direction</h3>
-          <div class="skills-list">
-            <div class="skill-item">
-              <h4 class="skill-name">AI Filmmaking &amp; Editing</h4>
-              <p class="skill-desc">Directing narratives with Sora, Veo 3, and Runway Gen-3 workflows.</p>
-            </div>
-            <div class="skill-item">
-              <h4 class="skill-name">Cinematography</h4>
-              <p class="skill-desc">Expert in camera logic, natural lighting, and luxury aesthetics.</p>
-            </div>
-            <div class="skill-item">
-              <h4 class="skill-name">Visual Storytelling</h4>
-              <p class="skill-desc">Constructing high-impact emotional beats and storyboards.</p>
-            </div>
+        <!-- Tool 1: Veo 3 -->
+        <div class="stack-item" data-speed="0.12">
+          <div class="stack-card">
+            <span class="stack-num">01</span>
+            <h3 class="stack-name">Veo 3</h3>
+            <p class="stack-category">Cinematic Video Generation</p>
           </div>
         </div>
 
-        <div class="skills-column reveal-up" id="skills-col-2">
-          <h3 class="skills-column-title">Technical Operations</h3>
-          <div class="skills-list">
-            <div class="skill-item">
-              <h4 class="skill-name">Media Pipelines</h4>
-              <p class="skill-desc">Automated ingestion, cloud processing, and multi-platform publishing.</p>
-            </div>
-            <div class="skill-item">
-              <h4 class="skill-name">Advanced Color Grading</h4>
-              <p class="skill-desc">DaVinci Resolve grading calibrated for cinema and luxury HDR.</p>
-            </div>
-            <div class="skill-item">
-              <h4 class="skill-name">Generative Art Engines</h4>
-              <p class="skill-desc">Custom diffusion models, fine-tuning, and prompt optimization.</p>
-            </div>
+        <!-- Tool 2: N8N -->
+        <div class="stack-item" data-speed="-0.08">
+          <div class="stack-card">
+            <span class="stack-num">02</span>
+            <h3 class="stack-name">N8N</h3>
+            <p class="stack-category">Orchestration &amp; Script Synthesis</p>
           </div>
         </div>
 
-        <div class="skills-column reveal-up" id="skills-col-3">
-          <h3 class="skills-column-title">Digital Strategy</h3>
-          <div class="skills-list">
-            <div class="skill-item">
-              <h4 class="skill-name">Viral Growth Logic</h4>
-              <p class="skill-desc">Algorithmic distribution matching luxury brand parameters.</p>
-            </div>
-            <div class="skill-item">
-              <h4 class="skill-name">Automation Architecture</h4>
-              <p class="skill-desc">Integrations utilizing Make, Zapier, and Python for content syndication.</p>
-            </div>
-            <div class="skill-item">
-              <h4 class="skill-name">Brand Consulting</h4>
-              <p class="skill-desc">Transforming traditional PR campaigns into digital-native stories.</p>
-            </div>
+        <!-- Tool 3: Pinterest SEO -->
+        <div class="stack-item" data-speed="0.18">
+          <div class="stack-card">
+            <span class="stack-num">03</span>
+            <h3 class="stack-name">Pinterest</h3>
+            <p class="stack-category">Evergreen Search Traffic</p>
+          </div>
+        </div>
+
+        <!-- Tool 4: Gumroad -->
+        <div class="stack-item" data-speed="-0.05">
+          <div class="stack-card">
+            <span class="stack-num">04</span>
+            <h3 class="stack-name">Gumroad</h3>
+            <p class="stack-category">Digital Commerce &amp; Licensing</p>
+          </div>
+        </div>
+
+        <!-- Tool 5: Beacons.ai -->
+        <div class="stack-item" data-speed="0.08">
+          <div class="stack-card">
+            <span class="stack-num">05</span>
+            <h3 class="stack-name">Beacons.ai</h3>
+            <p class="stack-category">Mobile conversion node</p>
+          </div>
+        </div>
+
+        <!-- Tool 6: Canva / Make.com -->
+        <div class="stack-item" data-speed="-0.15">
+          <div class="stack-card">
+            <span class="stack-num">06</span>
+            <h3 class="stack-name">Canva &amp; Make</h3>
+            <p class="stack-category">Asset Assembly &amp; Scheduling</p>
           </div>
         </div>
 
@@ -227,82 +504,108 @@
     </div>
   </section>
 
-  <!-- Gallery Section -->
-  <section id="gallery" class="gallery-section">
-    <div class="gallery-wrapper">
-      <div class="gallery-track" id="gallery-track">
-        
-        <div class="gallery-item">
-          <img src="gallery1.jpg" class="gallery-img" loading="lazy" alt="Neon city reflections on a wet street at night">
-        </div>
-
-        <div class="gallery-item">
-          <img src="gallery2.jpg" class="gallery-img" loading="lazy" alt="Architectural shadows with golden sun light rays piercing pillars">
-        </div>
-
-        <div class="gallery-item">
-          <img src="gallery3.jpg" class="gallery-img" loading="lazy" alt="Close-up of photographer's hands adjusting vintage camera dial">
-        </div>
-
-        <div class="gallery-item">
-          <img src="gallery4.jpg" class="gallery-img" loading="lazy" alt="Dramatic wind-blown desert sand dunes at dusk with twilight glow">
-        </div>
-
-        <div class="gallery-item">
-          <img src="gallery5.jpg" class="gallery-img" loading="lazy" alt="Silhouette of a person standing against a deep gold sunset sky">
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact Section (Dark Theme) -->
+  <!-- 5. CONTACT (Cinematic 3D Landing) -->
   <section id="contact" class="contact-section">
+    <!-- Camera Viewfinder HUD overlay -->
+    <div class="viewfinder-hud">
+      <div class="hud-corner top-left"></div>
+      <div class="hud-corner top-right"></div>
+      <div class="hud-corner bottom-left"></div>
+      <div class="hud-corner bottom-right"></div>
+      
+      <div class="hud-top-meta">
+        <span class="hud-rec"><span class="rec-dot"></span>REC</span>
+        <span class="hud-mode">RAW 4K HDR &bull; 24FPS</span>
+      </div>
+      <div class="hud-bottom-meta">
+        <span class="hud-iso">ISO 400</span>
+        <span class="hud-shutter">1/50s</span>
+        <span class="hud-fstop">f/2.8</span>
+      </div>
+    </div>
+
     <div class="contact-glow"></div>
-    <div class="container">
+    <div class="container" id="contact-container">
       <div class="contact-grid">
-        <div class="contact-info">
+        <div class="contact-info" id="contact-info-node">
           <h2 class="contact-title">Start a Project</h2>
-          <p class="contact-desc">Let's discuss how we can elevate your brand with advanced visual styling.</p>
+          <p class="contact-desc">
+            Let's build a consistent brand, automated workflow, or high-fidelity cinematic pipeline. Located in Dubai, operating globally.
+          </p>
           <div class="contact-email-wrapper">
-            <a href="mailto:hello@baizid.com" class="contact-email" id="typewriter-email">hello@baizid.com</a>
+            <a href="mailto:wonderpie2024@gmail.com" class="contact-email">wonderpie2024@gmail.com</a>
           </div>
+          
+          <!-- Aesthetic SVG Social Buttons -->
           <div class="social-links">
-            <a href="#" class="social-link">Instagram</a>
-            <a href="#" class="social-link">YouTube</a>
-            <a href="#" class="social-link">LinkedIn</a>
-            <a href="#" class="social-link">Vimeo</a>
+            <a href="#" class="social-btn" aria-label="Facebook">
+              <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="Instagram">
+              <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="LinkedIn">
+              <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="https://wa.me/2026061801" target="_blank" class="social-btn" aria-label="WhatsApp">
+              <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            </a>
           </div>
         </div>
         
-        <div class="contact-form-container">
-          <!-- 
-            Formspree integration is required. 
-            To activate this form, sign up on Formspree, create a form, 
-            and replace the form attributes below with:
-            <form action="https://formspree.io/f/your_form_id" method="POST"> 
-          -->
-          <form class="contact-form" onsubmit="event.preventDefault();">
+        <div class="contact-form-container" id="contact-form-node">
+          <!-- Success Overlay -->
+          <div class="form-success-overlay" id="form-success">
+            <svg class="success-svg" viewBox="0 0 24 24" width="60" height="60" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <h3 class="success-title">Transmission Received</h3>
+            <p class="success-desc">
+              Your message has been processed successfully. Baizid will contact you shortly.
+            </p>
+            <button class="success-reset-btn" id="success-reset">Send Another</button>
+          </div>
+
+          <form class="contact-form" id="portfolio-contact-form">
+            <!-- Name Input Group (Floating Label) -->
             <div class="form-group">
+              <input type="text" id="form-name" name="name" placeholder=" " required>
               <label for="form-name">Name</label>
-              <input type="text" id="form-name" name="name" placeholder="Your Name" required>
+              <span class="focus-line"></span>
             </div>
+            
+            <!-- Email Input Group (Floating Label) -->
             <div class="form-group">
+              <input type="email" id="form-email" name="email" placeholder=" " required>
               <label for="form-email">Email</label>
-              <input type="email" id="form-email" name="email" placeholder="hello@domain.com" required>
+              <span class="focus-line"></span>
             </div>
+            
+            <!-- Message Input Group (Floating Label) -->
             <div class="form-group">
+              <textarea id="form-message" name="message" rows="4" placeholder=" " required></textarea>
               <label for="form-message">Message</label>
-              <textarea id="form-message" name="message" rows="4" placeholder="Tell me about your vision..." required></textarea>
+              <span class="focus-line"></span>
             </div>
-            <button type="submit" class="submit-btn">Send Message</button>
+            
+            <button type="submit" class="submit-btn" id="form-submit-btn">
+              <span class="btn-text">Send Message</span>
+              <span class="btn-loader"></span>
+            </button>
           </form>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Script -->
+  <!-- GSAP, Lenis, and Three.js dependencies -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  
+  <!-- Main Script -->
   <script src="script.js"></script>
 </body>
 </html>
