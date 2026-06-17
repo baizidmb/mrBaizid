@@ -3,18 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   // 1. LENIS SMOOTH SCROLL INTEGRATION
   // ==========================================================================
-  const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-  });
+  // Connect Lenis to GSAP ScrollTrigger only on desktop (width > 900px)
+  let lenis;
+  if (window.innerWidth > 900) {
+    lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
 
-  // Connect Lenis to GSAP ScrollTrigger
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
-  });
-  gsap.ticker.lagSmoothing(0);
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+  }
 
   // ==========================================================================
   // 2. SCROLL PROGRESS INDICATOR
@@ -27,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let scrollVelocity = 0;
   let targetScrollVelocity = 0;
 
-  lenis.on('scroll', (e) => {
+  const handleScrollEvents = () => {
     // Scroll progress bar
     const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
     if (totalHeight > 0) {
@@ -49,7 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
     targetScrollVelocity = dy / dt;
     lastScrollTime = now;
     lastScrollY = window.scrollY;
-  });
+  };
+
+  if (lenis) {
+    lenis.on('scroll', handleScrollEvents);
+  } else {
+    window.addEventListener('scroll', handleScrollEvents);
+  }
 
   // ==========================================================================
   // 3. RESPONSIVE MOTION WITH GSAP MATCHMEDIA
@@ -378,12 +387,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Mobile Animation Suite (width <= 900px)
   mm.add("(max-width: 900px)", () => {
-    // 3.7 Mobile Hero Entrance
-    gsap.set(".text-line span", { yPercent: 0 });
-    gsap.set("#hero-eyebrow-node", { opacity: 1, y: 0 });
-    gsap.set("#hero-subtitle-node", { opacity: 1, y: 0 });
-    gsap.set("#hero-img-parallax", { scale: 1 });
+    // 3.7 Mobile Hero Entrance (Simple load animation)
+    const mobileTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    gsap.set(".text-line span", { yPercent: 100 });
+    gsap.set("#hero-eyebrow-node", { opacity: 0, y: 15 });
+    gsap.set("#hero-subtitle-node", { opacity: 0, y: 15 });
+    gsap.set(".hero-portrait-card", { opacity: 0, y: 30 });
     gsap.set("#hero-scroll-node", { opacity: 0 });
+
+    mobileTl.to(".hero-portrait-card", { opacity: 1, y: 0, duration: 1.2 })
+            .to(".text-line span", { yPercent: 0, duration: 1.0, stagger: 0.1 }, "-=0.8")
+            .to("#hero-eyebrow-node", { opacity: 1, y: 0, duration: 0.6 }, "-=0.6")
+            .to("#hero-subtitle-node", { opacity: 1, y: 0, duration: 0.6 }, "-=0.4");
 
     // Clean up destiny cards offset styling on mobile
     const destinyCards = document.querySelectorAll(".destiny-card");
@@ -414,6 +429,82 @@ document.addEventListener('DOMContentLoaded', () => {
         clearProps: "all"
       });
     }
+
+    // Scroll-triggered animations for mobile sections
+    // 1. What I Build cards
+    const mobileCards = document.querySelectorAll(".project-card-wrapper");
+    mobileCards.forEach(card => {
+      gsap.from(card, {
+        opacity: 0,
+        y: 40,
+        duration: 1.0,
+        scrollTrigger: {
+          trigger: card,
+          start: "top 85%",
+          toggleActions: "play none none none"
+        }
+      });
+    });
+
+    // 2. Neural Tunnel Rings (vertical segments)
+    const mobileRings = document.querySelectorAll(".tunnel-ring");
+    mobileRings.forEach(ring => {
+      gsap.from(ring, {
+        opacity: 0,
+        y: 40,
+        duration: 1.0,
+        scrollTrigger: {
+          trigger: ring,
+          start: "top 85%",
+          toggleActions: "play none none none"
+        }
+      });
+    });
+
+    // 3. Avatar panels
+    const mobileAvatarPanels = document.querySelectorAll(".avatar-text-panel");
+    mobileAvatarPanels.forEach(panel => {
+      gsap.from(panel, {
+        opacity: 0,
+        y: 40,
+        duration: 1.0,
+        scrollTrigger: {
+          trigger: panel,
+          start: "top 85%",
+          toggleActions: "play none none none"
+        }
+      });
+    });
+
+    // 4. Destiny cards
+    const mobileDestinies = document.querySelectorAll(".destiny-card");
+    mobileDestinies.forEach(card => {
+      gsap.from(card, {
+        opacity: 0,
+        y: 40,
+        duration: 1.0,
+        scrollTrigger: {
+          trigger: card,
+          start: "top 85%",
+          toggleActions: "play none none none"
+        }
+      });
+    });
+
+    // 5. Stack Cards
+    const mobileStackCards = document.querySelectorAll(".stack-card");
+    mobileStackCards.forEach(card => {
+      gsap.from(card, {
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: card,
+          start: "top 90%",
+          toggleActions: "play none none none"
+        }
+      });
+    });
   });
 
   // ==========================================================================

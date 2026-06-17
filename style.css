@@ -1792,19 +1792,34 @@ a {
   /* Contact */
   .contact-section {
     padding: 80px 0;
+    transform-style: flat !important;
+    perspective: none !important;
+    overflow: visible !important;
   }
   
   .contact-section .container {
     padding: 0 24px;
+    transform-style: flat !important;
   }
   
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 48px;
+    transform-style: flat !important;
   }
   
   .contact-title {
     font-size: 40px;
+    transform: none !important;
+  }
+  
+  .contact-desc {
+    transform: none !important;
+    max-width: 100%;
+  }
+
+  .contact-email-wrapper {
+    transform: none !important;
   }
   
   .contact-email {
@@ -1813,6 +1828,12 @@ a {
   
   .contact-form-container {
     padding: 32px;
+    transform-style: flat !important;
+    transform: none !important;
+  }
+
+  .contact-form-container * {
+    transform: none !important;
   }
 }
 
