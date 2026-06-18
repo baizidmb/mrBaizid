@@ -631,339 +631,165 @@ document.addEventListener('DOMContentLoaded', () => {
     targetMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
   });
 
-  // Global WebGL 3D Scene representing the bubble universe
-  let globalScene, globalCamera, globalRenderer;
-  const bubbles = [];
-  const clusterMeshes = [];
-  let heroBlob;
+  // Global WebGL 3D Scene representing the black hole particle swarm
+  let globalScene, globalCamera, globalRenderer, globalComposer;
+  let instancedMesh;
+  const COUNT = 20000;
+  const positions = [];
+  const dummy = new THREE.Object3D();
+  const color = new THREE.Color();
+  const target = new THREE.Vector3();
 
-  // Track global accent colors
-  const targetAccentColor = new THREE.Color(0xff6b00); // Start with Hero Amber
-  const currentAccentColor = new THREE.Color(0xff6b00);
-  window.setTargetAccentColor = (hex) => {
-    targetAccentColor.set(hex);
+  // Control variables for the black hole simulation
+  const PARAMS = {
+    scale: 48,
+    spin: 2.54,
+    accretion: 1.5,
+    warp: 2.2
   };
 
-  // Track global click ripples
-  let clickTime = 99.0;
-  const clickPos = new THREE.Vector2(0, 0);
-  window.addEventListener('click', (e) => {
-    // Avoid triggering on inputs or buttons to prevent annoying overrides
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.closest('a')) {
-      return;
-    }
-    clickTime = 0.0;
-    clickPos.x = (e.clientX / window.innerWidth) * 2 - 1;
-    clickPos.y = -(e.clientY / window.innerHeight) * 2 + 1;
-  });
+  // Helper stub for compatibility
+  const addControl = (id, label, min, max, val) => {
+    return PARAMS[id] !== undefined ? PARAMS[id] : val;
+  };
 
   function initGlobal3D() {
     const canvas = document.getElementById('global-3d-canvas');
     if (!canvas) return;
 
     globalScene = new THREE.Scene();
+    globalScene.fog = new THREE.FogExp2(0x000000, 0.008);
     
-    // Set up camera
-    globalCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-    globalCamera.position.set(0, 0, 4.5);
+    // Camera settings optimized for black hole viewport
+    globalCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    globalCamera.position.set(0, 30, 120);
 
-    globalRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    globalRenderer = new THREE.WebGLRenderer({ 
+      canvas: canvas, 
+      alpha: true, 
+      antialias: true,
+      powerPreference: "high-performance" 
+    });
     globalRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     globalRenderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Single Shader Material for all morphing liquid glass bubbles
-    const bubbleMaterial = new THREE.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      uniforms: {
-        uTime: { value: 0.0 },
-        uMouse: { value: new THREE.Vector2(0, 0) },
-        uColor: { value: new THREE.Color(0xffffff) },
-        uAccentColor: { value: new THREE.Color(0xff6b00) },
-        uBlobScale: { value: 1.0 }, // Scale displacement per mesh
-        uScrollVelocity: { value: 0.0 },
-        uHover: { value: 0.0 },
-        uClickRipple: { value: 0.0 }
-      },
-      vertexShader: `
-        uniform float uTime;
-        uniform vec2 uMouse;
-        uniform float uBlobScale;
-        uniform float uScrollVelocity;
-        uniform float uHover;
-        uniform float uClickRipple;
-        varying vec3 vNormal;
-        varying vec3 vViewPosition;
-        varying vec3 vPosition;
-
-        void main() {
-          vNormal = normalize(normalMatrix * normal);
-          vPosition = position;
-          
-          // Ripple speed and wobble dynamics scale up with hover interaction
-          float speedFactor = 1.6 + uHover * 2.2;
-          float wave = sin(position.x * 2.2 + uTime * speedFactor) * 
-                       cos(position.y * 2.2 - uTime * (speedFactor * 0.7)) * 
-                       sin(position.z * 1.8 + uTime * (speedFactor * 0.4));
-          
-          // Wobble amplitude increases when hovered or clicked
-          float displacementAmount = 0.22 + uHover * 0.18 + uClickRipple;
-          vec3 displaced = position + normal * wave * displacementAmount * uBlobScale;
-          
-          // Gentle mouse push influence
-          float d = distance(position.xy, uMouse * 2.2);
-          displaced += normal * (sin(uTime * 3.5) * 0.05 * uBlobScale) / (d + 0.5);
-
-          // Volume-preserving scroll stretching along Y-axis
-          float stretch = 1.0 + abs(uScrollVelocity) * 0.25;
-          float compress = 1.0 / sqrt(stretch);
-          displaced.y *= stretch;
-          displaced.x *= compress;
-          displaced.z *= compress;
-
-          vec4 mvPosition = modelViewMatrix * vec4(displaced, 1.0);
-          vViewPosition = mvPosition.xyz;
-          gl_Position = projectionMatrix * mvPosition;
-        }
-      `,
-      fragmentShader: `
-        uniform vec3 uColor;
-        uniform vec3 uAccentColor;
-        uniform float uTime;
-        uniform float uHover;
-        varying vec3 vNormal;
-        varying vec3 vViewPosition;
-        varying vec3 vPosition;
-
-        void main() {
-          vec3 normal = normalize(vNormal);
-          vec3 viewDir = normalize(-vViewPosition);
-          
-          // Fresnel edge light
-          float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 3.0);
-          
-          // Specular highlights
-          float diff = max(dot(normal, normalize(vec3(1.0, 2.0, 2.0))), 0.0);
-          vec3 halfDir = normalize(viewDir + normalize(vec3(1.0, 2.0, 2.0)));
-          
-          // Hover soft-widens and intensifies the specular shine
-          float specPower = mix(128.0, 64.0, uHover);
-          float specMultiplier = mix(0.95, 1.8, uHover);
-          float spec = pow(max(dot(normal, halfDir), 0.0), specPower) * specMultiplier;
-          
-          // Accent and base glass color blending
-          vec3 baseColor = mix(uColor, uAccentColor, fresnel * 0.7 + sin(vPosition.y * 2.5 + uTime * 1.0) * 0.15 + 0.15);
-          
-          // Hover color shift adding a bright glossy white reflection
-          baseColor = mix(baseColor, vec3(0.9, 0.95, 1.0), uHover * 0.35);
-          
-          vec3 finalColor = baseColor * (0.2 + 0.8 * diff) + vec3(1.0) * spec * 0.95;
-          
-          // Edge opacity increases on hover
-          float alpha = mix(0.08, 0.82 + uHover * 0.12, fresnel) + spec * 0.45;
-          gl_FragColor = vec4(finalColor, clamp(alpha, 0.0, 0.96));
-        }
-      `
-    });
-
-    // 1. Large Hero Blob
-    const heroGeo = new THREE.SphereGeometry(1.4, 64, 64);
-    heroBlob = new THREE.Mesh(heroGeo, bubbleMaterial.clone());
-    heroBlob.material.uniforms.uBlobScale.value = 1.0;
-    
-    // Set position
-    if (window.innerWidth > 900) {
-      heroBlob.position.set(1.15, 0, 0);
-    } else {
-      heroBlob.position.set(0, -0.45, -0.3);
-      heroBlob.scale.set(0.85, 0.85, 0.85);
-    }
-    globalScene.add(heroBlob);
-    window.hero3dBlob = heroBlob;
-
-    // 2. Background Bubbles field (Scattered across sections Y ranges from 0 down to -16)
-    const bubbleCount = 14;
-    const bubbleGeo = new THREE.SphereGeometry(1, 32, 32);
-    
-    for (let i = 0; i < bubbleCount; i++) {
-      const size = 0.15 + Math.random() * 0.35;
-      const bMat = bubbleMaterial.clone();
-      bMat.uniforms.uBlobScale.value = 0.45;
-      
-      const bMesh = new THREE.Mesh(bubbleGeo, bMat);
-      bMesh.scale.set(size, size, size);
-      
-      // Distribute bubbles along scroll path
-      const x = (Math.random() - 0.5) * 3.8;
-      const y = -Math.random() * 14.5 - 1.0; // Y from -1.0 down to -15.5
-      const z = -Math.random() * 2.0 - 0.5;
-      
-      bMesh.position.set(x, y, z);
-      
-      bMesh.userData = {
-        spinX: Math.random() * 0.2 + 0.05,
-        spinY: Math.random() * 0.2 + 0.05,
-        wobbleOffset: Math.random() * 100
-      };
-      
-      globalScene.add(bMesh);
-      bubbles.push(bMesh);
+    // Post-processing setup with UnrealBloomPass (disabled on mobile for peak performance)
+    const isMobile = window.innerWidth <= 900;
+    if (!isMobile && typeof THREE.EffectComposer !== 'undefined') {
+      globalComposer = new THREE.EffectComposer(globalRenderer);
+      globalComposer.addPass(new THREE.RenderPass(globalScene, globalCamera));
+      const bloomPass = new THREE.UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight), 
+        1.5, 0.4, 0.85
+      );
+      bloomPass.strength = 1.4;
+      bloomPass.radius = 0.45;
+      bloomPass.threshold = 0.05;
+      globalComposer.addPass(bloomPass);
     }
 
-    // 3. Contact Cluster (Orbiting group at Y = -16.5)
-    const clusterCount = 4;
-    const contactCenterY = -16.5;
+    // Instanced Mesh for 20,000 particles using TetrahedronGeometry
+    const geometry = new THREE.TetrahedronGeometry(0.22);
+    const material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85 });
     
-    for (let i = 0; i < clusterCount; i++) {
-      const size = 0.2 + Math.random() * 0.2;
-      const bMat = bubbleMaterial.clone();
-      bMat.uniforms.uBlobScale.value = 0.5;
-      
-      const bMesh = new THREE.Mesh(bubbleGeo, bMat);
-      bMesh.scale.set(size, size, size);
-      
-      const angle = (i / clusterCount) * Math.PI * 2;
-      const radius = 1.2;
-      bMesh.position.set(Math.cos(angle) * radius, contactCenterY, Math.sin(angle) * radius - 0.5);
-      
-      bMesh.userData = {
-        angle: angle,
-        orbitRadius: radius,
-        speed: 0.15 + Math.random() * 0.1
-      };
-      
-      globalScene.add(bMesh);
-      clusterMeshes.push(bMesh);
+    instancedMesh = new THREE.InstancedMesh(geometry, material, COUNT);
+    instancedMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    globalScene.add(instancedMesh);
+
+    // Initialize positions randomly
+    for (let i = 0; i < COUNT; i++) {
+      positions.push(new THREE.Vector3(
+        (Math.random() - 0.5) * 200, 
+        (Math.random() - 0.5) * 200, 
+        (Math.random() - 0.5) * 200
+      ));
+      instancedMesh.setColorAt(i, color.setHex(0x00ff88));
     }
 
     const clock = new THREE.Clock();
-    const tempV = new THREE.Vector3();
-    const projV = new THREE.Vector3();
     
     function animate() {
       requestAnimationFrame(animate);
       
-      const elapsedTime = clock.getElapsedTime();
-      const dt = Math.min(0.03, clock.getDelta());
+      const time = clock.getElapsedTime() * 0.9;
       
       // Lerp mouse coordinates
       mouse.x += (targetMouse.x - mouse.x) * 0.08;
       mouse.y += (targetMouse.y - mouse.y) * 0.08;
 
-      // Decay scroll velocity towards 0
-      targetScrollVelocity *= 0.92;
-      scrollVelocity += (targetScrollVelocity - scrollVelocity) * 0.08;
-
-      // Update click ripple timer
-      clickTime += dt;
+      // Accretion Disk Physics Simulation (User Injected Logic)
+      const count = COUNT;
+      const scale = addControl("scale", "Event Horizon", 20, 200, 90);
+      const spin = addControl("spin", "Spin", 0.2, 8.0, 3.0);
+      const accretion = addControl("accretion", "Accretion Disk", 0.0, 2.0, 1.0);
+      const warp = addControl("warp", "Space Warp", 0.0, 3.0, 1.2);
       
-      // Lerp accent color
-      currentAccentColor.lerp(targetAccentColor, 0.05);
-      
-      // Update Hero Blob uniforms
-      if (heroBlob) {
-        heroBlob.material.uniforms.uTime.value = elapsedTime;
-        heroBlob.material.uniforms.uMouse.value.copy(mouse);
-        heroBlob.material.uniforms.uScrollVelocity.value = scrollVelocity;
-        heroBlob.material.uniforms.uAccentColor.value.copy(currentAccentColor);
-        heroBlob.rotation.y = elapsedTime * 0.12;
-        heroBlob.rotation.x = elapsedTime * 0.06;
+      const t = time * 0.35;
+      const ga = 2.399963229728653; // Golden angle
 
-        // Proximity detection for Hero Blob
-        projV.copy(heroBlob.position);
-        projV.project(globalCamera);
-        let dist = mouse.distanceTo(new THREE.Vector2(projV.x, projV.y));
-        let hover = dist < 0.6 ? (1.0 - (dist / 0.6)) : 0.0;
-        hover = hover * hover * (3.0 - 2.0 * hover);
-        heroBlob.material.uniforms.uHover.value += (hover - heroBlob.material.uniforms.uHover.value) * 0.1;
+      for (let i = 0; i < COUNT; i++) {
+        const u = (i + 0.5) / count;
+        const a = i * ga;
+        
+        const band = u * 24.0 - 12.0;
+        const disk = 1.0 - Math.abs(Math.sin(band * 0.5));
+        const radius = scale * (0.08 + 1.9 * u * u);
+        
+        const swirl = a + spin * Math.log(radius + 1.0) - t * (2.0 + 3.0 * (1.0 - u));
+        
+        const grav = 1.0 / (1.0 + radius * 0.015);
+        const bend = warp * grav * grav;
+        
+        const x0 = radius * Math.cos(swirl);
+        const z0 = radius * Math.sin(swirl);
+        
+        const x = x0 + bend * z0;
+        const z = z0 - bend * x0;
+        const y = scale * 0.22 * disk * Math.sin(a * 0.17 + t * 4.0) * accretion;
+        
+        target.set(x, y, z);
+        
+        // Relativistic heat coloration (blazing orange inside to cool indigo outside)
+        const heat = 1.0 - Math.min(1.0, radius / (scale * 2.0));
+        const hue = 0.08 + 0.58 * (1.0 - heat);
+        const sat = 0.8 + 0.2 * heat;
+        const light = 0.15 + 0.55 * Math.pow(heat, 1.5);
+        
+        color.setHSL(hue, sat, light);
 
-        // Click ripple for Hero Blob
-        let clickDist = projV.distanceTo(new THREE.Vector3(clickPos.x, clickPos.y, 0));
-        let arrivalTime = clickDist / 2.2;
-        let timeSinceArrival = clickTime - arrivalTime;
-        let clickRipple = 0.0;
-        if (timeSinceArrival > 0.0 && timeSinceArrival < 1.0) {
-          clickRipple = Math.sin(timeSinceArrival * Math.PI * 3.0) * Math.exp(-timeSinceArrival * 4.0) * 0.35;
-        }
-        heroBlob.material.uniforms.uClickRipple.value = clickRipple;
+        // Interpolate position towards target for fluid momentum
+        positions[i].lerp(target, 0.08);
+        dummy.position.copy(positions[i]);
+        dummy.updateMatrix();
+        instancedMesh.setMatrixAt(i, dummy.matrix);
+        instancedMesh.setColorAt(i, color);
       }
+      
+      instancedMesh.instanceMatrix.needsUpdate = true;
+      if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
 
-      // Update background bubbles
-      bubbles.forEach(b => {
-        b.material.uniforms.uTime.value = elapsedTime;
-        b.material.uniforms.uMouse.value.copy(mouse);
-        b.material.uniforms.uScrollVelocity.value = scrollVelocity;
-        b.material.uniforms.uAccentColor.value.copy(currentAccentColor);
-        
-        b.rotation.x = elapsedTime * b.userData.spinX;
-        b.rotation.y = elapsedTime * b.userData.spinY;
-        b.position.y += Math.sin(elapsedTime * 0.5 + b.userData.wobbleOffset) * 0.001;
-
-        // Proximity detection for background bubble
-        projV.copy(b.position);
-        projV.project(globalCamera);
-        let dist = mouse.distanceTo(new THREE.Vector2(projV.x, projV.y));
-        let hover = dist < 0.45 ? (1.0 - (dist / 0.45)) : 0.0;
-        hover = hover * hover * (3.0 - 2.0 * hover);
-        b.material.uniforms.uHover.value += (hover - b.material.uniforms.uHover.value) * 0.1;
-
-        // Click ripple for background bubble
-        let clickDist = projV.distanceTo(new THREE.Vector3(clickPos.x, clickPos.y, 0));
-        let arrivalTime = clickDist / 2.2;
-        let timeSinceArrival = clickTime - arrivalTime;
-        let clickRipple = 0.0;
-        if (timeSinceArrival > 0.0 && timeSinceArrival < 1.0) {
-          clickRipple = Math.sin(timeSinceArrival * Math.PI * 3.0) * Math.exp(-timeSinceArrival * 4.0) * 0.35;
-        }
-        b.material.uniforms.uClickRipple.value = clickRipple;
-      });
-
-      // Update Contact cluster orbits
-      clusterMeshes.forEach(b => {
-        b.material.uniforms.uTime.value = elapsedTime;
-        b.material.uniforms.uMouse.value.copy(mouse);
-        b.material.uniforms.uScrollVelocity.value = scrollVelocity;
-        b.material.uniforms.uAccentColor.value.copy(currentAccentColor);
-        
-        b.userData.angle += b.userData.speed * 0.02;
-        
-        const x = Math.cos(b.userData.angle) * b.userData.orbitRadius;
-        const z = Math.sin(b.userData.angle) * b.userData.orbitRadius - 0.5;
-        b.position.x = x;
-        b.position.z = z;
-        b.rotation.y = elapsedTime * 0.2;
-
-        // Proximity detection for Contact bubble
-        projV.copy(b.position);
-        projV.project(globalCamera);
-        let dist = mouse.distanceTo(new THREE.Vector2(projV.x, projV.y));
-        let hover = dist < 0.45 ? (1.0 - (dist / 0.45)) : 0.0;
-        hover = hover * hover * (3.0 - 2.0 * hover);
-        b.material.uniforms.uHover.value += (hover - b.material.uniforms.uHover.value) * 0.1;
-
-        // Click ripple for Contact bubble
-        let clickDist = projV.distanceTo(new THREE.Vector3(clickPos.x, clickPos.y, 0));
-        let arrivalTime = clickDist / 2.2;
-        let timeSinceArrival = clickTime - arrivalTime;
-        let clickRipple = 0.0;
-        if (timeSinceArrival > 0.0 && timeSinceArrival < 1.0) {
-          clickRipple = Math.sin(timeSinceArrival * Math.PI * 3.0) * Math.exp(-timeSinceArrival * 4.0) * 0.35;
-        }
-        b.material.uniforms.uClickRipple.value = clickRipple;
-      });
-
-      // Camera Scroll Navigation
+      // Camera Scroll Orbit & Parallax
       const totalScrollHeight = document.documentElement.scrollHeight - window.innerHeight;
       const scrollPercent = totalScrollHeight > 0 ? (window.scrollY / totalScrollHeight) : 0;
-      const targetCameraY = -scrollPercent * 16.5; 
-      globalCamera.position.y += (targetCameraY - globalCamera.position.y) * 0.08;
       
-      // Camera parallax responsive mouse look
-      globalCamera.position.x += (mouse.x * 0.4 - globalCamera.position.x) * 0.05;
-      globalCamera.position.z += (4.5 + mouse.y * 0.15 - globalCamera.position.z) * 0.05;
-      globalCamera.lookAt(new THREE.Vector3(globalCamera.position.x * 0.75, globalCamera.position.y, -0.5));
+      const targetCamX = Math.sin(scrollPercent * Math.PI * 0.5) * 45;
+      const targetCamY = 30 - scrollPercent * 90;
+      const targetCamZ = 120 - scrollPercent * 40;
       
-      globalRenderer.render(globalScene, globalCamera);
+      globalCamera.position.x += (targetCamX - globalCamera.position.x) * 0.05;
+      globalCamera.position.y += (targetCamY - globalCamera.position.y) * 0.05;
+      globalCamera.position.z += (targetCamZ - globalCamera.position.z) * 0.05;
+      
+      // Responsive mouse look
+      globalCamera.position.x += (mouse.x * 12 - globalCamera.position.x) * 0.05;
+      globalCamera.position.y += (mouse.y * 12 - globalCamera.position.y) * 0.05;
+      globalCamera.lookAt(new THREE.Vector3(0, -scrollPercent * 15, 0));
+
+      if (globalComposer) {
+        globalComposer.render();
+      } else {
+        globalRenderer.render(globalScene, globalCamera);
+      }
     }
     
     animate();
@@ -972,16 +798,7 @@ document.addEventListener('DOMContentLoaded', () => {
       globalCamera.aspect = window.innerWidth / window.innerHeight;
       globalCamera.updateProjectionMatrix();
       globalRenderer.setSize(window.innerWidth, window.innerHeight);
-      
-      if (heroBlob) {
-        if (window.innerWidth > 900) {
-          heroBlob.position.set(1.15, 0, 0);
-          heroBlob.scale.set(1, 1, 1);
-        } else {
-          heroBlob.position.set(0, -0.45, -0.3);
-          heroBlob.scale.set(0.85, 0.85, 0.85);
-        }
-      }
+      if (globalComposer) globalComposer.setSize(window.innerWidth, window.innerHeight);
     });
   }
 
