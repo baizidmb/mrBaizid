@@ -61,6 +61,83 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
+  // 2.5 GLOBAL HERO SCROLL IMAGE SEQUENCE PRELOADER & RENDERER
+  // ==========================================================================
+  const frameCount = 300;
+  const images = [];
+  const sequence = { frame: 0 };
+  const sequenceCanvas = document.getElementById("hero-sequence-canvas");
+  
+  // Preload all 300 JPEGs in the background
+  for (let i = 1; i <= frameCount; i++) {
+    const img = new Image();
+    const frameStr = String(i).padStart(3, '0');
+    img.src = `hero-sequence/ezgif-frame-${frameStr}.jpg`;
+    images.push(img);
+  }
+
+  if (sequenceCanvas) {
+    const ctx = sequenceCanvas.getContext("2d");
+    
+    const renderSequenceFrame = () => {
+      const img = images[sequence.frame];
+      if (img && img.complete) {
+        const imgWidth = img.naturalWidth;
+        const imgHeight = img.naturalHeight;
+        if (imgWidth === 0 || imgHeight === 0) return;
+        
+        const canvasWidth = sequenceCanvas.width;
+        const canvasHeight = sequenceCanvas.height;
+        
+        const imgRatio = imgWidth / imgHeight;
+        const canvasRatio = canvasWidth / canvasHeight;
+        
+        let drawWidth, drawHeight, offsetX, offsetY;
+        
+        if (imgRatio > canvasRatio) {
+          drawHeight = canvasHeight;
+          drawWidth = canvasHeight * imgRatio;
+          offsetX = (canvasWidth - drawWidth) / 2;
+          offsetY = 0;
+        } else {
+          drawWidth = canvasWidth;
+          drawHeight = canvasWidth / imgRatio;
+          offsetX = 0;
+          offsetY = (canvasHeight - drawHeight) / 2;
+        }
+        
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+      }
+    };
+
+    const resizeSequenceCanvas = () => {
+      sequenceCanvas.width = window.innerWidth;
+      sequenceCanvas.height = window.innerHeight;
+      renderSequenceFrame();
+    };
+
+    // Render first frame as soon as it is loaded
+    images[0].onload = renderSequenceFrame;
+    window.addEventListener('resize', resizeSequenceCanvas);
+    resizeSequenceCanvas();
+
+    // Map scroll progress of #hero to sequence frame globally for desktop & mobile
+    gsap.to(sequence, {
+      frame: frameCount - 1,
+      snap: "frame",
+      ease: "none",
+      scrollTrigger: {
+        trigger: "#hero",
+        start: "top top",
+        end: "bottom top",
+        scrub: 0.1 // Adding tiny scrub lag for smooth frame transitions
+      },
+      onUpdate: renderSequenceFrame
+    });
+  }
+
+  // ==========================================================================
   // 3. RESPONSIVE MOTION WITH GSAP MATCHMEDIA
   // ==========================================================================
   let mm = gsap.matchMedia();
@@ -75,10 +152,10 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set("#hero-eyebrow-node", { opacity: 0, y: 15 });
     gsap.set("#hero-subtitle-node", { opacity: 0, y: 15 });
     gsap.set("#hero-scroll-node", { opacity: 0, y: 10 });
-    gsap.set("#hero-img-parallax", { scale: 1.15 });
+    gsap.set(".hero-sequence-wrapper", { opacity: 0, scale: 1.1 });
     gsap.set(".hero-portrait-card", { opacity: 0, scale: 0.92, y: 30, rotateY: -10 });
 
-    entryTl.to("#hero-img-parallax", { scale: 1.0, duration: 2.2, ease: "power3.out" })
+    entryTl.to(".hero-sequence-wrapper", { opacity: 0.65, scale: 1.0, duration: 2.2, ease: "power3.out" })
            .to(".hero-portrait-card", { opacity: 1, scale: 1, y: 0, rotateY: 0, duration: 1.8, ease: "power3.out" }, "-=2.2")
            .to(".text-line span", { yPercent: 0, duration: 1.4, stagger: 0.12 }, "-=1.8")
            .to("#hero-eyebrow-node", { opacity: 1, y: 0, duration: 0.8 }, "-=1.0")
@@ -86,17 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
            .to("#hero-scroll-node", { opacity: 1, y: 0, duration: 0.8 }, "-=0.6");
 
     // 3.2 Hero Scroll Parallax
-    gsap.to("#hero-img-parallax", {
-      yPercent: 15,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#hero",
-        start: "top top",
-        end: "bottom top",
-        scrub: true
-      }
-    });
-
     gsap.to("#hero-text-wrap", {
       yPercent: -15,
       ease: "none",
@@ -392,10 +458,12 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set(".text-line span", { yPercent: 100 });
     gsap.set("#hero-eyebrow-node", { opacity: 0, y: 15 });
     gsap.set("#hero-subtitle-node", { opacity: 0, y: 15 });
+    gsap.set(".hero-sequence-wrapper", { opacity: 0, scale: 1.08 });
     gsap.set(".hero-portrait-card", { opacity: 0, y: 30 });
     gsap.set("#hero-scroll-node", { opacity: 0 });
 
-    mobileTl.to(".hero-portrait-card", { opacity: 1, y: 0, duration: 1.2 })
+    mobileTl.to(".hero-sequence-wrapper", { opacity: 0.65, scale: 1.0, duration: 1.5, ease: "power2.out" })
+            .to(".hero-portrait-card", { opacity: 1, y: 0, duration: 1.2 }, "-=1.2")
             .to(".text-line span", { yPercent: 0, duration: 1.0, stagger: 0.1 }, "-=0.8")
             .to("#hero-eyebrow-node", { opacity: 1, y: 0, duration: 0.6 }, "-=0.6")
             .to("#hero-subtitle-node", { opacity: 1, y: 0, duration: 0.6 }, "-=0.4");
