@@ -130,7 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
       scrollTrigger: {
         trigger: "#hero",
         start: "top top",
-        end: "bottom top",
+        end: "+=200%",
+        pin: true,
         scrub: 0.1 // Adding tiny scrub lag for smooth frame transitions
       },
       onUpdate: renderSequenceFrame
@@ -153,10 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set("#hero-subtitle-node", { opacity: 0, y: 15 });
     gsap.set("#hero-scroll-node", { opacity: 0, y: 10 });
     gsap.set(".hero-sequence-wrapper", { opacity: 0, scale: 1.1 });
-    gsap.set(".hero-portrait-card", { opacity: 0, scale: 0.92, y: 30, rotateY: -10 });
 
     entryTl.to(".hero-sequence-wrapper", { opacity: 0.65, scale: 1.0, duration: 2.2, ease: "power3.out" })
-           .to(".hero-portrait-card", { opacity: 1, scale: 1, y: 0, rotateY: 0, duration: 1.8, ease: "power3.out" }, "-=2.2")
            .to(".text-line span", { yPercent: 0, duration: 1.4, stagger: 0.12 }, "-=1.8")
            .to("#hero-eyebrow-node", { opacity: 1, y: 0, duration: 0.8 }, "-=1.0")
            .to("#hero-subtitle-node", { opacity: 1, y: 0, duration: 0.8 }, "-=0.8")
@@ -164,12 +163,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3.2 Hero Scroll Parallax
     gsap.to("#hero-text-wrap", {
-      yPercent: -15,
-      ease: "none",
+      yPercent: -20,
+      opacity: 0,
+      ease: "power1.inOut",
       scrollTrigger: {
         trigger: "#hero",
         start: "top top",
-        end: "bottom top",
+        end: "+=120%",
+        scrub: true
+      }
+    });
+
+    gsap.to("#hero-scroll-node", {
+      yPercent: -40,
+      opacity: 0,
+      ease: "power1.inOut",
+      scrollTrigger: {
+        trigger: "#hero",
+        start: "top top",
+        end: "+=30%",
         scrub: true
       }
     });
@@ -183,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollTrigger: {
           trigger: "#hero",
           start: "top top",
-          end: "bottom top",
+          end: "+=200%",
           scrub: true
         }
       });
@@ -194,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollTrigger: {
           trigger: "#hero",
           start: "top top",
-          end: "bottom top",
+          end: "+=200%",
           scrub: true
         }
       });
@@ -417,38 +429,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
     }
-
-    // 3.8.5 Hero Portrait Card 3D Mouse Parallax Tilt
-    const heroSec = document.getElementById("hero");
-    const heroCard = document.querySelector(".hero-portrait-card");
-
-    if (heroSec && heroCard) {
-      heroSec.addEventListener("mousemove", (e) => {
-        const rect = heroSec.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-
-        const rotateY = (x / (rect.width / 2)) * 12;
-        const rotateX = -(y / (rect.height / 2)) * 12;
-
-        gsap.to(heroCard, {
-          rotateX: rotateX,
-          rotateY: rotateY,
-          transformPerspective: 1200,
-          ease: "power2.out",
-          duration: 0.5
-        });
-      });
-
-      heroSec.addEventListener("mouseleave", () => {
-        gsap.to(heroCard, {
-          rotateX: 0,
-          rotateY: 0,
-          ease: "power2.out",
-          duration: 0.8
-        });
-      });
-    }
   });
 
   // Mobile Animation Suite (width <= 900px)
@@ -459,11 +439,9 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set("#hero-eyebrow-node", { opacity: 0, y: 15 });
     gsap.set("#hero-subtitle-node", { opacity: 0, y: 15 });
     gsap.set(".hero-sequence-wrapper", { opacity: 0, scale: 1.08 });
-    gsap.set(".hero-portrait-card", { opacity: 0, y: 30 });
     gsap.set("#hero-scroll-node", { opacity: 0 });
 
     mobileTl.to(".hero-sequence-wrapper", { opacity: 0.65, scale: 1.0, duration: 1.5, ease: "power2.out" })
-            .to(".hero-portrait-card", { opacity: 1, y: 0, duration: 1.2 }, "-=1.2")
             .to(".text-line span", { yPercent: 0, duration: 1.0, stagger: 0.1 }, "-=0.8")
             .to("#hero-eyebrow-node", { opacity: 1, y: 0, duration: 0.6 }, "-=0.6")
             .to("#hero-subtitle-node", { opacity: 1, y: 0, duration: 0.6 }, "-=0.4");
