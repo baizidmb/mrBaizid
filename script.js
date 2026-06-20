@@ -94,17 +94,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const canvasRatio = canvasWidth / canvasHeight;
         
         let drawWidth, drawHeight, offsetX, offsetY;
+        const isMobile = window.innerWidth <= 900;
         
-        if (imgRatio > canvasRatio) {
-          drawHeight = canvasHeight;
-          drawWidth = canvasHeight * imgRatio;
-          offsetX = (canvasWidth - drawWidth) / 2;
-          offsetY = 0;
+        if (isMobile) {
+          // Force contain fit with 15% side crop to reduce top/bottom gaps and prevent character cuts on mobile
+          if (imgRatio > canvasRatio) {
+            drawWidth = canvasWidth / 0.70; // Crop 15% from left and 15% from right (leaves 70% visible width)
+            drawHeight = drawWidth / imgRatio;
+            offsetX = (canvasWidth - drawWidth) / 2;
+            offsetY = (canvasHeight - drawHeight) / 2;
+          } else {
+            drawHeight = canvasHeight;
+            drawWidth = canvasHeight * imgRatio;
+            offsetX = (canvasWidth - drawWidth) / 2;
+            offsetY = 0;
+          }
         } else {
-          drawWidth = canvasWidth;
-          drawHeight = canvasWidth / imgRatio;
-          offsetX = 0;
-          offsetY = (canvasHeight - drawHeight) / 2;
+          // Standard cover fit for desktop viewports
+          if (imgRatio > canvasRatio) {
+            drawHeight = canvasHeight;
+            drawWidth = canvasHeight * imgRatio;
+            offsetX = (canvasWidth - drawWidth) / 2;
+            offsetY = 0;
+          } else {
+            drawWidth = canvasWidth;
+            drawHeight = canvasWidth / imgRatio;
+            offsetX = 0;
+            offsetY = (canvasHeight - drawHeight) / 2;
+          }
         }
         
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
