@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const images = [];
   const sequence = { frame: 0 };
   const sequenceCanvas = document.getElementById("hero-sequence-canvas");
+  let renderSequenceFrame = () => {};
   
   // Preload all 300 JPEGs in the background
   for (let i = 1; i <= frameCount; i++) {
@@ -79,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (sequenceCanvas) {
     const ctx = sequenceCanvas.getContext("2d");
     
-    const renderSequenceFrame = () => {
+    renderSequenceFrame = () => {
       const img = images[sequence.frame];
       if (img && img.complete) {
         const imgWidth = img.naturalWidth;
