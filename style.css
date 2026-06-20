@@ -3,23 +3,23 @@
    ========================================================================== */
 :root {
   /* Ambient Shifting Gradients (Background) */
-  --bg-cream: #FAF6F0;
-  --bg-peach: #FCEEE3;
-  --bg-blush: #FCE5E5;
-  --bg-sand: #FAF0E6;
-  --bg-dark: rgba(255, 255, 255, 0.08); /* Light liquid glass panel base */
+  --bg-cream: #0f172a;
+  --bg-peach: #0f172a;
+  --bg-blush: #0f172a;
+  --bg-sand: #0f172a;
+  --bg-dark: rgba(255, 255, 255, 0.03); /* Light liquid glass panel base */
   
-  /* Specular iOS 27 Transparent Glossy Glass Theme variables */
-  --panel-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.02) 100%);
-  --panel-border: rgba(255, 255, 255, 0.3);
-  --panel-inset-highlight: inset 1.5px 1.5px 0px rgba(255, 255, 255, 0.55), inset -1.5px -1.5px 0px rgba(255, 255, 255, 0.08);
-  --panel-shadow: 0 40px 100px rgba(130, 110, 95, 0.08), var(--panel-inset-highlight);
+  /* Specular iOS 27 Transparent Glass Theme variables */
+  --panel-bg: rgba(255, 255, 255, 0.03);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --panel-inset-highlight: inset 1px 1px 0px rgba(255, 255, 255, 0.05);
+  --panel-shadow: 0 40px 100px rgba(0, 0, 0, 0.35), var(--panel-inset-highlight);
 
   /* Typography Colors */
-  --text-dark: #1A1917;
-  --text-light: #1A1917; /* High contrast dark text on light glass panels */
-  --text-muted: #5E5C58;
-  --text-muted-light: #7E7C78;
+  --text-dark: #f8fafc;
+  --text-light: #f8fafc; /* High contrast dark text on light glass panels */
+  --text-muted: #94a3b8;
+  --text-muted-light: #64748b;
 
   /* Premium Accent */
   --accent-amber: #FF6B00; /* Molten orange */
@@ -33,6 +33,69 @@
   /* Transitions */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --transition-bg: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Liquid Aurora Background */
+.aurora-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: #0f172a;
+}
+
+.aurora-orb {
+  position: absolute;
+  width: 65vw;
+  height: 65vw;
+  border-radius: 50%;
+  filter: blur(120px);
+  mix-blend-mode: screen;
+  opacity: 0.45;
+  will-change: transform;
+}
+
+.orb1 {
+  background: radial-gradient(circle, #4f46e5 0%, rgba(79, 70, 229, 0) 70%);
+  top: -10%;
+  left: -10%;
+  animation: morphOrb1 20s infinite alternate ease-in-out;
+}
+
+.orb2 {
+  background: radial-gradient(circle, #ec4899 0%, rgba(236, 72, 153, 0) 70%);
+  bottom: -10%;
+  right: -10%;
+  animation: morphOrb2 20s infinite alternate ease-in-out;
+}
+
+.orb3 {
+  background: radial-gradient(circle, #06b6d4 0%, rgba(6, 182, 212, 0) 70%);
+  top: 35%;
+  left: 25%;
+  animation: morphOrb3 20s infinite alternate ease-in-out;
+}
+
+@keyframes morphOrb1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(12vw, 8vh) scale(1.15) rotate(45deg); }
+  100% { transform: translate(-4vw, -4vh) scale(0.9) rotate(-45deg); }
+}
+
+@keyframes morphOrb2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-8vw, -12vh) scale(1.2) rotate(-60deg); }
+  100% { transform: translate(4vw, 4vh) scale(0.95) rotate(30deg); }
+}
+
+@keyframes morphOrb3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-12vw, 12vh) scale(0.85) rotate(90deg); }
+  100% { transform: translate(8vw, -8vh) scale(1.1) rotate(-90deg); }
 }
 
 /* ==========================================================================
@@ -596,8 +659,8 @@ a {
   box-shadow: var(--panel-shadow);
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(45px) saturate(200%);
-  -webkit-backdrop-filter: blur(45px) saturate(200%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .browser-header {
@@ -907,8 +970,8 @@ a {
   transform-style: preserve-3d;
   will-change: transform;
   transition: border-color 0.4s ease, box-shadow 0.4s ease;
-  backdrop-filter: blur(45px) saturate(200%);
-  -webkit-backdrop-filter: blur(45px) saturate(200%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .destiny-card:hover {
@@ -1041,8 +1104,8 @@ a {
   gap: 12px;
   box-shadow: var(--panel-shadow);
   pointer-events: auto;
-  backdrop-filter: blur(45px) saturate(200%);
-  -webkit-backdrop-filter: blur(45px) saturate(200%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .ring-content img {
@@ -1097,7 +1160,7 @@ a {
    4. STACK / TOOLS (Parallax Depth Grid)
    ========================================================================== */
 .stack-section {
-  padding: 80px 0;
+  padding: 150px 0;
   background-color: transparent;
   transition: var(--transition-bg);
 }
@@ -1130,8 +1193,8 @@ a {
   height: 280px;
   justify-content: space-between;
   transition: border-color 0.4s ease, box-shadow 0.4s ease;
-  backdrop-filter: blur(45px) saturate(200%);
-  -webkit-backdrop-filter: blur(45px) saturate(200%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .stack-card:hover {
@@ -1168,7 +1231,7 @@ a {
 .contact-section {
   background-color: transparent;
   color: var(--text-dark);
-  padding: 120px 0;
+  padding: 150px 0;
   position: relative;
   overflow: hidden;
   perspective: 1200px;
@@ -1363,8 +1426,8 @@ a {
   border: 1px solid var(--panel-border);
   padding: 56px;
   border-radius: 12px;
-  backdrop-filter: blur(45px) saturate(200%);
-  -webkit-backdrop-filter: blur(45px) saturate(200%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   box-shadow: var(--panel-shadow);
   transform-style: preserve-3d;
   will-change: transform;
@@ -1594,7 +1657,7 @@ a {
 @media (max-width: 900px) {
   /* Layout Spacing */
   section {
-    padding: 80px 0;
+    padding: 120px 0 !important;
   }
   
   .nav-container {

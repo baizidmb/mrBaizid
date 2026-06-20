@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Animate nav bar background and border to transparent
     heroScrollTl.to("#main-nav", {
-      backgroundColor: "rgba(250, 246, 240, 0)",
+      backgroundColor: "rgba(15, 23, 42, 0)",
       backdropFilter: "blur(0px)",
       webkitBackdropFilter: "blur(0px)",
       borderBottomColor: "rgba(255, 107, 0, 0)",
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 5. Restore nav bar background near the end (from 0.75 to 1.0)
     heroScrollTl.to("#main-nav", {
-      backgroundColor: "rgba(250, 246, 240, 0.75)",
+      backgroundColor: "rgba(15, 23, 42, 0.75)",
       backdropFilter: "blur(20px)",
       webkitBackdropFilter: "blur(20px)",
       borderBottomColor: "rgba(255, 107, 0, 0.08)",
@@ -647,7 +647,7 @@ document.addEventListener('DOMContentLoaded', () => {
       end: "bottom center",
       onToggle: (self) => {
         if (self.isActive) {
-          gsap.to("body", { backgroundColor: trans.bg, duration: 0.8 });
+          // gsap.to("body", { backgroundColor: trans.bg, duration: 0.8 });
           if (trans.isDark) {
             document.body.classList.add("dark-active");
           } else {
@@ -661,14 +661,14 @@ document.addEventListener('DOMContentLoaded', () => {
       onLeaveBack: () => {
         const currentIndex = bgTransitions.indexOf(trans);
         if (currentIndex === 0) {
-          gsap.to("body", { backgroundColor: "#FAF6F0", duration: 0.8 });
+          // gsap.to("body", { backgroundColor: "#FAF6F0", duration: 0.8 });
           document.body.classList.remove("dark-active");
           if (window.setTargetAccentColor) {
             window.setTargetAccentColor(0xff6b00); // Reset to Hero amber
           }
         } else {
           const prev = bgTransitions[currentIndex - 1];
-          gsap.to("body", { backgroundColor: prev.bg, duration: 0.8 });
+          // gsap.to("body", { backgroundColor: prev.bg, duration: 0.8 });
           if (prev.isDark) {
             document.body.classList.add("dark-active");
           } else {
