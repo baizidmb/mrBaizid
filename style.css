@@ -1962,7 +1962,7 @@ a {
     position: relative !important;
     width: 100% !important;
     height: auto !important;
-    aspect-ratio: 16 / 9 !important;
+    aspect-ratio: 1.0666 !important; /* 0.60 * 16 / 9 for exactly 20% crop from each side horizontally */
   }
   
   #hero-sequence-canvas {
