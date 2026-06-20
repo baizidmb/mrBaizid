@@ -121,84 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
     images[0].onload = renderSequenceFrame;
     window.addEventListener('resize', resizeSequenceCanvas);
     resizeSequenceCanvas();
-
-    // Unified cinematic scroll timeline for #hero (pinned for 200% of viewport height)
-    const heroScrollTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: "#hero",
-        start: "top top",
-        end: "+=200%",
-        pin: true,
-        scrub: 0.1,
-        invalidateOnRefresh: true
-      }
-    });
-
-    // 1. Map scroll progress to sequence frame (duration 1.0)
-    heroScrollTl.to(sequence, {
-      frame: frameCount - 1,
-      snap: "frame",
-      ease: "none",
-      onUpdate: renderSequenceFrame,
-      duration: 1.0
-    }, 0);
-
-    // 2. Slide navigation header out of view immediately (duration 0.25)
-    heroScrollTl.to("#main-nav", {
-      yPercent: -120,
-      opacity: 0,
-      ease: "power2.inOut",
-      duration: 0.25
-    }, 0);
-
-    // 3. Fade out scroll indicator immediately (duration 0.2)
-    heroScrollTl.to("#hero-scroll-node", {
-      y: 30,
-      opacity: 0,
-      ease: "power2.inOut",
-      duration: 0.2
-    }, 0);
-
-    // 4. Slide in cinematic widescreen bars (duration 0.35)
-    heroScrollTl.to(".cinematic-bar.top-bar", {
-      yPercent: 100,
-      ease: "power2.out",
-      duration: 0.35
-    }, 0);
-    heroScrollTl.to(".cinematic-bar.bottom-bar", {
-      yPercent: -100,
-      ease: "power2.out",
-      duration: 0.35
-    }, 0);
-
-    // 5. Slide left, blur, and fade out hero text (duration 0.55)
-    heroScrollTl.to("#hero-text-wrap", {
-      xPercent: -30,
-      filter: "blur(12px)",
-      opacity: 0,
-      ease: "power2.inOut",
-      duration: 0.55
-    }, 0);
-
-    // 6. Slide out cinematic bars near the unpin event (duration 0.25, starting at 0.75)
-    heroScrollTl.to(".cinematic-bar.top-bar", {
-      yPercent: 0,
-      ease: "power2.in",
-      duration: 0.25
-    }, 0.75);
-    heroScrollTl.to(".cinematic-bar.bottom-bar", {
-      yPercent: 0,
-      ease: "power2.in",
-      duration: 0.25
-    }, 0.75);
-
-    // 7. Recover navigation bar visibility near the unpin event (duration 0.25, starting at 0.75)
-    heroScrollTl.to("#main-nav", {
-      yPercent: 0,
-      opacity: 1,
-      ease: "power2.out",
-      duration: 0.25
-    }, 0.75);
   }
 
   // ==========================================================================
@@ -223,6 +145,69 @@ document.addEventListener('DOMContentLoaded', () => {
            .to("#hero-eyebrow-node", { opacity: 1, y: 0, duration: 0.8 }, "-=1.0")
            .to("#hero-subtitle-node", { opacity: 1, y: 0, duration: 0.8 }, "-=0.8")
            .to("#hero-scroll-node", { opacity: 1, y: 0, duration: 0.8 }, "-=0.6");
+
+    // 3.1.5 Pinned Scroll Timeline (Desktop)
+    const heroScrollTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: "#hero",
+        start: "top top",
+        end: "+=200%",
+        pin: true,
+        scrub: 0.1,
+        invalidateOnRefresh: true
+      }
+    });
+
+    // 1. Frame sequence mapping
+    heroScrollTl.to(sequence, {
+      frame: frameCount - 1,
+      snap: "frame",
+      ease: "none",
+      onUpdate: renderSequenceFrame,
+      duration: 1.0
+    }, 0);
+
+    // 2. Animate nav bar background and border to transparent
+    heroScrollTl.to("#main-nav", {
+      backgroundColor: "rgba(250, 246, 240, 0)",
+      backdropFilter: "blur(0px)",
+      webkitBackdropFilter: "blur(0px)",
+      borderBottomColor: "rgba(255, 107, 0, 0)",
+      duration: 0.3
+    }, 0);
+
+    // 3. Fade out scroll indicator immediately
+    heroScrollTl.to("#hero-scroll-node", {
+      y: 20,
+      opacity: 0,
+      ease: "power2.inOut",
+      duration: 0.2
+    }, 0);
+
+    // 4. Slide left and fade left column (Title)
+    heroScrollTl.to("#hero-left-col-node", {
+      xPercent: -15,
+      opacity: 0.25,
+      ease: "power2.inOut",
+      duration: 0.6
+    }, 0);
+
+    // 5. Slide right and fade right column (Eyebrow & Subtitle)
+    heroScrollTl.to("#hero-right-col-node", {
+      xPercent: 15,
+      opacity: 0.25,
+      ease: "power2.inOut",
+      duration: 0.6
+    }, 0);
+
+    // 6. Restore nav bar background near the end (from 0.75 to 1.0)
+    heroScrollTl.to("#main-nav", {
+      backgroundColor: "rgba(250, 246, 240, 0.75)",
+      backdropFilter: "blur(20px)",
+      webkitBackdropFilter: "blur(20px)",
+      borderBottomColor: "rgba(255, 107, 0, 0.08)",
+      duration: 0.25
+    }, 0.75);
 
 
 
@@ -485,6 +470,65 @@ document.addEventListener('DOMContentLoaded', () => {
             .to(".text-line span", { yPercent: 0, duration: 1.0, stagger: 0.1 }, "-=0.8")
             .to("#hero-eyebrow-node", { opacity: 1, y: 0, duration: 0.6 }, "-=0.6")
             .to("#hero-subtitle-node", { opacity: 1, y: 0, duration: 0.6 }, "-=0.4");
+
+    // 3.7.5 Pinned Scroll Timeline (Mobile)
+    const heroScrollTlMobile = gsap.timeline({
+      scrollTrigger: {
+        trigger: "#hero",
+        start: "top top",
+        end: "+=200%",
+        pin: true,
+        scrub: 0.1,
+        invalidateOnRefresh: true
+      }
+    });
+
+    // 1. Frame sequence mapping (Mobile)
+    heroScrollTlMobile.to(sequence, {
+      frame: frameCount - 1,
+      snap: "frame",
+      ease: "none",
+      onUpdate: renderSequenceFrame,
+      duration: 1.0
+    }, 0);
+
+    // 2. Hide Main Nav immediately on Mobile
+    heroScrollTlMobile.to("#main-nav", {
+      yPercent: -120,
+      opacity: 0,
+      ease: "power2.inOut",
+      duration: 0.25
+    }, 0);
+
+    // 3. Hide Scroll Indicator on Mobile
+    heroScrollTlMobile.to("#hero-scroll-node", {
+      y: 20,
+      opacity: 0,
+      ease: "power2.inOut",
+      duration: 0.2
+    }, 0);
+
+    // 4. Fade out left and right columns on Mobile
+    heroScrollTlMobile.to("#hero-left-col-node", {
+      yPercent: -20,
+      opacity: 0,
+      ease: "power2.inOut",
+      duration: 0.5
+    }, 0);
+    heroScrollTlMobile.to("#hero-right-col-node", {
+      yPercent: 20,
+      opacity: 0,
+      ease: "power2.inOut",
+      duration: 0.5
+    }, 0);
+
+    // 5. Restore Main Nav near the end (Mobile)
+    heroScrollTlMobile.to("#main-nav", {
+      yPercent: 0,
+      opacity: 1,
+      ease: "power2.out",
+      duration: 0.25
+    }, 0.75);
 
     // Clean up destiny cards offset styling on mobile
     const destinyCards = document.querySelectorAll(".destiny-card");
