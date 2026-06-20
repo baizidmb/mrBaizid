@@ -87,6 +87,8 @@ body {
   height: 100vh;
   z-index: 1; /* Sits behind content, above body background gradient */
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
 }
 
 /* Ensure all content sections stack above the fixed background WebGL canvas */
@@ -523,7 +525,7 @@ a {
 .build-section {
   position: relative;
   height: 100vh;
-  background-color: var(--bg-cream);
+  background-color: transparent;
   transition: var(--transition-bg);
 }
 
@@ -689,7 +691,7 @@ a {
 .avatar-story-section {
   position: relative;
   height: 100vh;
-  background-color: var(--bg-peach);
+  background-color: transparent;
   transition: var(--transition-bg);
 }
 
@@ -814,7 +816,7 @@ a {
 .destinies-section {
   position: relative;
   height: 100vh;
-  background-color: var(--bg-sand);
+  background-color: transparent;
   transition: var(--transition-bg);
 }
 
@@ -940,7 +942,7 @@ a {
 .tunnel-section {
   position: relative;
   height: 100vh;
-  background-color: var(--bg-cream);
+  background-color: transparent;
   transition: var(--transition-bg);
 }
 
@@ -1076,7 +1078,7 @@ a {
    ========================================================================== */
 .stack-section {
   padding: 80px 0;
-  background-color: var(--bg-blush);
+  background-color: transparent;
   transition: var(--transition-bg);
 }
 
@@ -1144,7 +1146,7 @@ a {
    5. CONTACT (Cinematic 3D Landing & Liquid Glossy Panels)
    ========================================================================== */
 .contact-section {
-  background-color: #FAF6F0; /* Soft warm background */
+  background-color: transparent;
   color: var(--text-dark);
   padding: 120px 0;
   position: relative;

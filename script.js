@@ -135,17 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3.1 Hero Entrance Animation
     const entryTl = gsap.timeline({ defaults: { ease: "power4.out" } });
     
-    gsap.set(".text-line span", { yPercent: 105 });
-    gsap.set("#hero-eyebrow-node", { opacity: 0, y: 15 });
-    gsap.set("#hero-subtitle-node", { opacity: 0, y: 15 });
     gsap.set("#hero-scroll-node", { opacity: 0, y: 10 });
     gsap.set(".hero-sequence-wrapper", { opacity: 0, scale: 1.1 });
 
     entryTl.to(".hero-sequence-wrapper", { opacity: 0.65, scale: 1.0, duration: 2.2, ease: "power3.out" })
-           .to(".text-line span", { yPercent: 0, duration: 1.4, stagger: 0.12 }, "-=1.8")
-           .to("#hero-eyebrow-node", { opacity: 1, y: 0, duration: 0.8 }, "-=1.0")
-           .to("#hero-subtitle-node", { opacity: 1, y: 0, duration: 0.8 }, "-=0.8")
-           .to("#hero-scroll-node", { opacity: 1, y: 0, duration: 0.8 }, "-=0.6");
+           .to("#hero-scroll-node", { opacity: 1, y: 0, duration: 0.8 }, "-=1.0");
 
     // 3.1.5 Pinned Scroll Timeline (Desktop)
     const heroScrollTl = gsap.timeline({
@@ -185,23 +179,14 @@ document.addEventListener('DOMContentLoaded', () => {
       duration: 0.2
     }, 0);
 
-    // 4. Slide left and fade left column (Title)
-    heroScrollTl.to("#hero-left-col-node", {
-      xPercent: -15,
-      opacity: 0.25,
-      ease: "power2.inOut",
-      duration: 0.6
-    }, 0);
+    // 4. Fade in the background particle canvas near the unpin segment (from 0.75 to 1.0)
+    heroScrollTl.to("#global-3d-canvas", {
+      opacity: 0.85,
+      ease: "power2.out",
+      duration: 0.25
+    }, 0.75);
 
-    // 5. Slide right and fade right column (Eyebrow & Subtitle)
-    heroScrollTl.to("#hero-right-col-node", {
-      xPercent: 15,
-      opacity: 0.25,
-      ease: "power2.inOut",
-      duration: 0.6
-    }, 0);
-
-    // 6. Restore nav bar background near the end (from 0.75 to 1.0)
+    // 5. Restore nav bar background near the end (from 0.75 to 1.0)
     heroScrollTl.to("#main-nav", {
       backgroundColor: "rgba(250, 246, 240, 0.75)",
       backdropFilter: "blur(20px)",
@@ -461,16 +446,11 @@ document.addEventListener('DOMContentLoaded', () => {
   mm.add("(max-width: 900px)", () => {
     // 3.7 Mobile Hero Entrance (Simple load animation)
     const mobileTl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    gsap.set(".text-line span", { yPercent: 100 });
-    gsap.set("#hero-eyebrow-node", { opacity: 0, y: 15 });
-    gsap.set("#hero-subtitle-node", { opacity: 0, y: 15 });
     gsap.set(".hero-sequence-wrapper", { opacity: 0, scale: 1.08 });
     gsap.set("#hero-scroll-node", { opacity: 0 });
 
     mobileTl.to(".hero-sequence-wrapper", { opacity: 0.65, scale: 1.0, duration: 1.5, ease: "power2.out" })
-            .to(".text-line span", { yPercent: 0, duration: 1.0, stagger: 0.1 }, "-=0.8")
-            .to("#hero-eyebrow-node", { opacity: 1, y: 0, duration: 0.6 }, "-=0.6")
-            .to("#hero-subtitle-node", { opacity: 1, y: 0, duration: 0.6 }, "-=0.4");
+            .to("#hero-scroll-node", { opacity: 1, duration: 0.6 }, "-=0.6");
 
     // 3.7.5 Pinned Scroll Timeline (Mobile)
     const heroScrollTlMobile = gsap.timeline({
@@ -509,19 +489,12 @@ document.addEventListener('DOMContentLoaded', () => {
       duration: 0.2
     }, 0);
 
-    // 4. Fade out left and right columns on Mobile
-    heroScrollTlMobile.to("#hero-left-col-node", {
-      yPercent: -20,
-      opacity: 0,
-      ease: "power2.inOut",
-      duration: 0.5
-    }, 0);
-    heroScrollTlMobile.to("#hero-right-col-node", {
-      yPercent: 20,
-      opacity: 0,
-      ease: "power2.inOut",
-      duration: 0.5
-    }, 0);
+    // 4. Fade in the background particle canvas near the unpin segment on Mobile (from 0.75 to 1.0)
+    heroScrollTlMobile.to("#global-3d-canvas", {
+      opacity: 0.85,
+      ease: "power2.out",
+      duration: 0.25
+    }, 0.75);
 
     // 5. Restore Main Nav near the end (Mobile)
     heroScrollTlMobile.to("#main-nav", {
