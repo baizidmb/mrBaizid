@@ -122,20 +122,83 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', resizeSequenceCanvas);
     resizeSequenceCanvas();
 
-    // Map scroll progress of #hero to sequence frame globally for desktop & mobile
-    gsap.to(sequence, {
-      frame: frameCount - 1,
-      snap: "frame",
-      ease: "none",
+    // Unified cinematic scroll timeline for #hero (pinned for 200% of viewport height)
+    const heroScrollTl = gsap.timeline({
       scrollTrigger: {
         trigger: "#hero",
         start: "top top",
         end: "+=200%",
         pin: true,
-        scrub: 0.1 // Adding tiny scrub lag for smooth frame transitions
-      },
-      onUpdate: renderSequenceFrame
+        scrub: 0.1,
+        invalidateOnRefresh: true
+      }
     });
+
+    // 1. Map scroll progress to sequence frame (duration 1.0)
+    heroScrollTl.to(sequence, {
+      frame: frameCount - 1,
+      snap: "frame",
+      ease: "none",
+      onUpdate: renderSequenceFrame,
+      duration: 1.0
+    }, 0);
+
+    // 2. Slide navigation header out of view immediately (duration 0.25)
+    heroScrollTl.to("#main-nav", {
+      yPercent: -120,
+      opacity: 0,
+      ease: "power2.inOut",
+      duration: 0.25
+    }, 0);
+
+    // 3. Fade out scroll indicator immediately (duration 0.2)
+    heroScrollTl.to("#hero-scroll-node", {
+      y: 30,
+      opacity: 0,
+      ease: "power2.inOut",
+      duration: 0.2
+    }, 0);
+
+    // 4. Slide in cinematic widescreen bars (duration 0.35)
+    heroScrollTl.to(".cinematic-bar.top-bar", {
+      yPercent: 100,
+      ease: "power2.out",
+      duration: 0.35
+    }, 0);
+    heroScrollTl.to(".cinematic-bar.bottom-bar", {
+      yPercent: -100,
+      ease: "power2.out",
+      duration: 0.35
+    }, 0);
+
+    // 5. Slide left, blur, and fade out hero text (duration 0.55)
+    heroScrollTl.to("#hero-text-wrap", {
+      xPercent: -30,
+      filter: "blur(12px)",
+      opacity: 0,
+      ease: "power2.inOut",
+      duration: 0.55
+    }, 0);
+
+    // 6. Slide out cinematic bars near the unpin event (duration 0.25, starting at 0.75)
+    heroScrollTl.to(".cinematic-bar.top-bar", {
+      yPercent: 0,
+      ease: "power2.in",
+      duration: 0.25
+    }, 0.75);
+    heroScrollTl.to(".cinematic-bar.bottom-bar", {
+      yPercent: 0,
+      ease: "power2.in",
+      duration: 0.25
+    }, 0.75);
+
+    // 7. Recover navigation bar visibility near the unpin event (duration 0.25, starting at 0.75)
+    heroScrollTl.to("#main-nav", {
+      yPercent: 0,
+      opacity: 1,
+      ease: "power2.out",
+      duration: 0.25
+    }, 0.75);
   }
 
   // ==========================================================================
@@ -161,30 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
            .to("#hero-subtitle-node", { opacity: 1, y: 0, duration: 0.8 }, "-=0.8")
            .to("#hero-scroll-node", { opacity: 1, y: 0, duration: 0.8 }, "-=0.6");
 
-    // 3.2 Hero Scroll Parallax
-    gsap.to("#hero-text-wrap", {
-      yPercent: -20,
-      opacity: 0,
-      ease: "power1.inOut",
-      scrollTrigger: {
-        trigger: "#hero",
-        start: "top top",
-        end: "+=120%",
-        scrub: true
-      }
-    });
 
-    gsap.to("#hero-scroll-node", {
-      yPercent: -40,
-      opacity: 0,
-      ease: "power1.inOut",
-      scrollTrigger: {
-        trigger: "#hero",
-        start: "top top",
-        end: "+=30%",
-        scrub: true
-      }
-    });
 
     // 3.2.1 Hero 3D Blob Scroll Parallax
     if (window.hero3dBlob) {
