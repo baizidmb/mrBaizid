@@ -159,15 +159,20 @@ a {
   z-index: 990;
   display: flex;
   align-items: center;
-  transition: background-color 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
-  border-bottom: 1px solid transparent;
+  transition: background-color 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(25px) saturate(220%);
+  -webkit-backdrop-filter: blur(25px) saturate(220%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .nav.scrolled {
-  background-color: rgba(250, 246, 240, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 107, 0, 0.08);
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 10px 30px rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(30px) saturate(240%);
+  -webkit-backdrop-filter: blur(30px) saturate(240%);
 }
 
 .nav-container {
@@ -217,48 +222,63 @@ a {
 
 .nav-link {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   position: relative;
-  display: inline-block;
-  perspective: 300px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.35), inset -1px -1px 0px rgba(0, 0, 0, 0.05), 0 4px 10px rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background-color 0.4s var(--ease-out-expo), border-color 0.4s var(--ease-out-expo), border-radius 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: inset 1.5px 1.5px 0px rgba(255, 255, 255, 0.5), inset -1.5px -1.5px 0px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(255, 107, 0, 0.1);
+  transform: scale(1.06);
+  border-radius: 20px 30px 24px 36px / 28px 24px 34px 28px; /* Organic liquid shape wiggle */
 }
 
 .nav-link-inner {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.5s var(--ease-out-expo);
+  transform: none !important;
+  transform-style: flat;
 }
 
 .nav-link:hover .nav-link-inner {
-  transform: rotateX(90deg);
+  transform: none !important;
 }
 
 .nav-link-front {
   position: relative;
   display: block;
-  transform: rotateX(0deg) translateZ(9px);
+  transform: none !important;
   color: var(--text-dark);
   white-space: nowrap;
-  padding: 2px 0;
+  padding: 0;
+  transition: color 0.3s ease;
 }
 
 .nav-link-back {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  transform: rotateX(-90deg) translateZ(9px);
+  display: none !important;
+}
+
+.nav-link:hover .nav-link-front {
   color: var(--accent-amber);
-  white-space: nowrap;
-  backface-visibility: hidden;
-  padding: 2px 0;
-  box-sizing: border-box;
 }
 
 /* Hamburger button */
@@ -366,7 +386,7 @@ a {
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
-  opacity: 0.65;
+  opacity: 1;
 }
 
 #hero-sequence-canvas {
@@ -1319,19 +1339,22 @@ a {
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: var(--text-dark);
-  box-shadow: 0 4px 15px rgba(180, 170, 160, 0.1);
-  backdrop-filter: blur(10px);
-  transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.45), inset -2px -2px 4px rgba(0, 0, 0, 0.05), 0 4px 15px rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  transition: color 0.4s var(--ease-out-expo), border-color 0.4s var(--ease-out-expo), background-color 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo), border-radius 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
 }
 
 .social-btn:hover {
   color: var(--accent-amber);
-  border-color: var(--accent-amber);
-  background-color: rgba(255, 255, 255, 0.8);
-  transform: scale(1.1) translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.45);
+  background-color: rgba(255, 255, 255, 0.16);
+  transform: scale(1.12) translateY(-4px);
+  box-shadow: inset 3px 3px 6px rgba(255, 255, 255, 0.55), inset -3px -3px 6px rgba(0, 0, 0, 0.08), 0 10px 25px rgba(255, 107, 0, 0.15);
+  border-radius: 40% 60% 50% 50% / 50% 40% 60% 50%; /* Fluid, mercury-like wiggle */
 }
 
 /* 3D Cinematic Glassmorphic Form Card */
@@ -1426,9 +1449,9 @@ a {
 
 /* Form submission button & loader */
 .submit-btn {
-  background-color: var(--accent-amber);
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.85) 0%, rgba(255, 70, 0, 0.9) 100%);
   color: #FFF;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
@@ -1437,19 +1460,26 @@ a {
   padding: 18px 40px;
   cursor: pointer;
   align-self: flex-start;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition: background-color 0.4s var(--ease-out-expo), border-color 0.4s var(--ease-out-expo), border-radius 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
   margin-top: 12px;
-  border-radius: 6px;
+  border-radius: 30px;
   transform: translateZ(30px);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
+  box-shadow: inset 1.5px 1.5px 0px rgba(255, 255, 255, 0.45), inset -1.5px -1.5px 0px rgba(0, 0, 0, 0.15), 0 8px 25px rgba(255, 107, 0, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .submit-btn:hover {
-  background-color: #FF8533;
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.95) 0%, rgba(255, 70, 0, 1.0) 100%);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateZ(30px) scale(1.05);
+  border-radius: 20px 30px 24px 36px / 28px 24px 34px 28px; /* Organic shape wiggle on hover */
+  box-shadow: inset 2px 2px 0px rgba(255, 255, 255, 0.55), inset -2px -2px 0px rgba(0, 0, 0, 0.2), 0 12px 30px rgba(255, 107, 0, 0.35);
 }
 
 .submit-btn:active {
@@ -1533,22 +1563,29 @@ a {
 }
 
 .success-reset-btn {
-  background: transparent;
-  border: 1px solid var(--accent-amber);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 107, 0, 0.45);
   color: var(--accent-amber);
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  padding: 10px 20px;
-  border-radius: 4px;
+  padding: 10px 22px;
+  border-radius: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.25), inset -1px -1px 0px rgba(0, 0, 0, 0.05);
+  transition: color 0.4s var(--ease-out-expo), border-color 0.4s var(--ease-out-expo), background-color 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo), border-radius 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .success-reset-btn:hover {
-  background: var(--accent-amber);
-  color: #FFF;
+  background: rgba(255, 107, 0, 0.12);
+  color: var(--accent-amber);
+  border-color: rgba(255, 107, 0, 0.8);
+  transform: scale(1.06);
+  border-radius: 15px 22px 18px 25px / 20px 18px 22px 20px;
+  box-shadow: inset 1.5px 1.5px 0px rgba(255, 255, 255, 0.35), inset -1.5px -1.5px 0px rgba(0, 0, 0, 0.08), 0 6px 15px rgba(255, 107, 0, 0.15);
 }
 
 /* ==========================================================================

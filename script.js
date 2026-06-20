@@ -137,8 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     gsap.set("#hero-scroll-node", { opacity: 0, y: 10 });
     gsap.set(".hero-sequence-wrapper", { opacity: 0, scale: 1.1 });
-
-    entryTl.to(".hero-sequence-wrapper", { opacity: 0.65, scale: 1.0, duration: 2.2, ease: "power3.out" })
+    entryTl.to(".hero-sequence-wrapper", { opacity: 1.0, scale: 1.0, duration: 2.2, ease: "power3.out" })
            .to("#hero-scroll-node", { opacity: 1, y: 0, duration: 0.8 }, "-=1.0");
 
     // 3.1.5 Pinned Scroll Timeline (Desktop)
@@ -448,8 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileTl = gsap.timeline({ defaults: { ease: "power3.out" } });
     gsap.set(".hero-sequence-wrapper", { opacity: 0, scale: 1.08 });
     gsap.set("#hero-scroll-node", { opacity: 0 });
-
-    mobileTl.to(".hero-sequence-wrapper", { opacity: 0.65, scale: 1.0, duration: 1.5, ease: "power2.out" })
+    mobileTl.to(".hero-sequence-wrapper", { opacity: 1.0, scale: 1.0, duration: 1.5, ease: "power2.out" })
             .to("#hero-scroll-node", { opacity: 1, duration: 0.6 }, "-=0.6");
 
     // 3.7.5 Pinned Scroll Timeline (Mobile)
