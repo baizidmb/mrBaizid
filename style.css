@@ -1947,6 +1947,32 @@ a {
 }
 
 /* ==========================================================================
+   MOBILE HERO LAYOUT REFINE (MAX-WIDTH: 768PX)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .hero-section {
+    height: auto !important;
+    min-height: 0 !important;
+    display: block !important;
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+  
+  .hero-sequence-wrapper {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+  }
+  
+  #hero-sequence-canvas {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+  }
+}
+
+/* ==========================================================================
    REDUCED MOTION ACCESSIBILITY
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {

@@ -130,8 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const resizeSequenceCanvas = () => {
-      sequenceCanvas.width = window.innerWidth;
-      sequenceCanvas.height = window.innerHeight;
+      sequenceCanvas.width = sequenceCanvas.clientWidth || window.innerWidth;
+      sequenceCanvas.height = sequenceCanvas.clientHeight || window.innerHeight;
       renderSequenceFrame();
     };
 
