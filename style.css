@@ -74,7 +74,7 @@ html.lenis, html.lenis body {
   width: 65vw;
   height: 65vw;
   border-radius: 50%;
-  filter: blur(120px);
+  filter: blur(100px);
   mix-blend-mode: screen;
   opacity: 0.45;
   will-change: transform;
