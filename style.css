@@ -8,6 +8,10 @@
   --bg-blush: #0f172a;
   --bg-sand: #0f172a;
   --bg-dark: rgba(255, 255, 255, 0.03); /* Light liquid glass panel base */
+
+  --bg-grad-1: #0f172a;
+  --bg-grad-2: #0f172a;
+  --bg-grad-3: #1e1b4b;
   
   /* Specular iOS 27 Transparent Glass Theme variables */
   --panel-bg: rgba(255, 255, 255, 0.03);
@@ -141,7 +145,7 @@ html, body {
 
 /* Smooth shifting body background */
 body {
-  transition: var(--transition-bg);
+  background: linear-gradient(135deg, var(--bg-grad-1) 0%, var(--bg-grad-2) 50%, var(--bg-grad-3) 100%) !important;
 }
 
 /* Scroll Progress Bar */

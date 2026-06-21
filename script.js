@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+  gsap.registerPlugin(ScrollTrigger);
+
   // ==========================================================================
   // 1. LENIS SMOOTH SCROLL INTEGRATION
   // ==========================================================================
@@ -715,6 +717,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
+  });
+
+  // 4.1.5 Ambient Background Gradient Shifting (Scroll-Linked)
+  const bgTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: "body",
+      start: "top top",
+      end: "bottom bottom",
+      scrub: 1
+    }
+  });
+
+  bgTl.to("body", {
+    "--bg-grad-1": "#1e1b4b",
+    "--bg-grad-2": "#311042",
+    "--bg-grad-3": "#181829",
+    duration: 1
+  })
+  .to("body", {
+    "--bg-grad-1": "#311042",
+    "--bg-grad-2": "#1e1b4b",
+    "--bg-grad-3": "#0f172a",
+    duration: 1
+  })
+  .to("body", {
+    "--bg-grad-1": "#1e1b4b",
+    "--bg-grad-2": "#083344",
+    "--bg-grad-3": "#0f172a",
+    duration: 1
+  })
+  .to("body", {
+    "--bg-grad-1": "#0f172a",
+    "--bg-grad-2": "#020617",
+    "--bg-grad-3": "#000000",
+    duration: 1
   });
 
   // 4.2 Contact Section Slide-Up Reveal
