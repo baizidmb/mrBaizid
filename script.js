@@ -3,21 +3,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   // 1. LENIS SMOOTH SCROLL INTEGRATION
   // ==========================================================================
-  // Connect Lenis to GSAP ScrollTrigger only on desktop (width > 900px)
-  let lenis;
-  if (window.innerWidth > 900) {
-    lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    });
+  // Connect Lenis to GSAP ScrollTrigger globally
+  const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    smoothTouch: true,
+    syncTouch: true
+  });
 
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-    gsap.ticker.lagSmoothing(0);
-  }
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+  gsap.ticker.lagSmoothing(0);
 
   // ==========================================================================
   // 2. SCROLL PROGRESS INDICATOR
@@ -54,11 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     lastScrollY = window.scrollY;
   };
 
-  if (lenis) {
-    lenis.on('scroll', handleScrollEvents);
-  } else {
-    window.addEventListener('scroll', handleScrollEvents);
-  }
+  lenis.on('scroll', handleScrollEvents);
 
   // ==========================================================================
   // 2.5 GLOBAL HERO SCROLL IMAGE SEQUENCE PRELOADER & RENDERER
@@ -147,7 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     gsap.set("#hero-scroll-node", { opacity: 0, y: 10 });
     gsap.set(".hero-sequence-wrapper", { opacity: 0, scale: 1.1 });
+    gsap.set(".hero-container", { opacity: 0, y: 30 });
     entryTl.to(".hero-sequence-wrapper", { opacity: 1.0, scale: 1.0, duration: 2.2, ease: "power3.out" })
+           .to(".hero-container", { opacity: 1, y: 0, duration: 1.2 }, "-=1.5")
            .to("#hero-scroll-node", { opacity: 1, y: 0, duration: 0.8 }, "-=1.0");
 
     // 3.1.5 Pinned Scroll Timeline (Desktop)
@@ -203,6 +200,21 @@ document.addEventListener('DOMContentLoaded', () => {
       borderBottomColor: "rgba(255, 107, 0, 0.08)",
       duration: 0.25
     }, 0.75);
+
+    // 6. Subtle Parallax for hero sequence wrapper (Desktop)
+    heroScrollTl.to(".hero-sequence-wrapper", {
+      yPercent: 30,
+      ease: "none",
+      duration: 1.0
+    }, 0);
+
+    // 7. Scale down and fade out hero content container (Desktop)
+    heroScrollTl.to(".hero-container", {
+      scale: 0.95,
+      opacity: 0,
+      ease: "power1.inOut",
+      duration: 0.5
+    }, 0);
 
 
 
@@ -449,6 +461,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
     }
+
+    // 3.9 Desktop Staggered Entrance Reveals
+    gsap.from(".build-horizontal-track .project-card-wrapper", {
+      y: 50,
+      opacity: 0,
+      duration: 1,
+      stagger: 0.15,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#build",
+        start: "top 80%",
+        toggleActions: "play none none none"
+      }
+    });
+
+    gsap.from(".stack-grid .stack-card", {
+      y: 50,
+      opacity: 0,
+      duration: 1,
+      stagger: 0.15,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#stack",
+        start: "top 80%",
+        toggleActions: "play none none none"
+      }
+    });
   });
 
   // Mobile Animation Suite (width <= 900px)
@@ -512,6 +551,14 @@ document.addEventListener('DOMContentLoaded', () => {
       duration: 0.25
     }, 0.75);
 
+    // 6. Scale down and fade out hero content container (Mobile)
+    heroScrollTlMobile.to(".hero-container", {
+      scale: 0.95,
+      opacity: 0,
+      ease: "power1.inOut",
+      duration: 0.5
+    }, 0);
+
     // Clean up destiny cards offset styling on mobile
     const destinyCards = document.querySelectorAll(".destiny-card");
     destinyCards.forEach((card) => {
@@ -542,80 +589,75 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Scroll-triggered animations for mobile sections
+    // Scroll-triggered staggered reveals for mobile sections
     // 1. What I Build cards
-    const mobileCards = document.querySelectorAll(".project-card-wrapper");
-    mobileCards.forEach(card => {
-      gsap.from(card, {
-        opacity: 0,
-        y: 40,
-        duration: 1.0,
-        scrollTrigger: {
-          trigger: card,
-          start: "top 85%",
-          toggleActions: "play none none none"
-        }
-      });
+    gsap.from(".build-horizontal-track .project-card-wrapper", {
+      opacity: 0,
+      y: 50,
+      duration: 1,
+      stagger: 0.15,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#build",
+        start: "top 85%",
+        toggleActions: "play none none none"
+      }
     });
 
     // 2. Neural Tunnel Rings (vertical segments)
-    const mobileRings = document.querySelectorAll(".tunnel-ring");
-    mobileRings.forEach(ring => {
-      gsap.from(ring, {
-        opacity: 0,
-        y: 40,
-        duration: 1.0,
-        scrollTrigger: {
-          trigger: ring,
-          start: "top 85%",
-          toggleActions: "play none none none"
-        }
-      });
+    gsap.from(".tunnel-container .tunnel-ring", {
+      opacity: 0,
+      y: 50,
+      duration: 1,
+      stagger: 0.15,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#neural-tunnel",
+        start: "top 85%",
+        toggleActions: "play none none none"
+      }
     });
 
     // 3. Avatar panels
-    const mobileAvatarPanels = document.querySelectorAll(".avatar-text-panel");
-    mobileAvatarPanels.forEach(panel => {
-      gsap.from(panel, {
-        opacity: 0,
-        y: 40,
-        duration: 1.0,
-        scrollTrigger: {
-          trigger: panel,
-          start: "top 85%",
-          toggleActions: "play none none none"
-        }
-      });
+    gsap.from(".avatar-text-column .avatar-text-panel", {
+      opacity: 0,
+      y: 50,
+      duration: 1,
+      stagger: 0.15,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#avatar-story",
+        start: "top 85%",
+        toggleActions: "play none none none"
+      }
     });
 
     // 4. Destiny cards
-    const mobileDestinies = document.querySelectorAll(".destiny-card");
-    mobileDestinies.forEach(card => {
-      gsap.from(card, {
-        opacity: 0,
-        y: 40,
-        duration: 1.0,
-        scrollTrigger: {
-          trigger: card,
-          start: "top 85%",
-          toggleActions: "play none none none"
-        }
-      });
+    gsap.from(".destiny-cylinder .destiny-card", {
+      opacity: 0,
+      y: 50,
+      duration: 1,
+      stagger: 0.15,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#destinies",
+        start: "top 85%",
+        toggleActions: "play none none none"
+      }
     });
 
     // 5. Stack Cards
-    const mobileStackCards = document.querySelectorAll(".stack-card");
-    mobileStackCards.forEach(card => {
-      gsap.from(card, {
-        opacity: 0,
-        y: 30,
-        duration: 0.8,
-        scrollTrigger: {
-          trigger: card,
-          start: "top 90%",
-          toggleActions: "play none none none"
-        }
-      });
+    gsap.from(".stack-grid .stack-card", {
+      opacity: 0,
+      y: 50,
+      duration: 1,
+      stagger: 0.15,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#stack",
+        start: "top 85%",
+        toggleActions: "play none none none"
+      }
     });
   });
 
@@ -677,14 +719,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4.2 Contact Section Slide-Up Reveal
   gsap.from(["#contact-info-node", "#contact-form-node"], {
-    y: 40,
+    y: 50,
     opacity: 0,
-    duration: 1.2,
+    duration: 1,
     stagger: 0.15,
     ease: "power3.out",
     scrollTrigger: {
       trigger: "#contact",
-      start: "top 85%",
+      start: "top 80%",
       toggleActions: "play none none none"
     }
   });

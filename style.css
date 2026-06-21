@@ -35,6 +35,27 @@
   --transition-bg: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Lenis Scroll Overrides & Optimization */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
 /* Liquid Aurora Background */
 .aurora-container {
   position: fixed;
@@ -1535,6 +1556,15 @@ a {
   box-shadow: inset 1.5px 1.5px 0px rgba(255, 255, 255, 0.45), inset -1.5px -1.5px 0px rgba(0, 0, 0, 0.15), 0 8px 25px rgba(255, 107, 0, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+
+.hero-cta-btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  z-index: 10;
 }
 
 .submit-btn:hover {
