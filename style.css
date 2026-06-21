@@ -462,10 +462,11 @@ a {
 }
 
 .hero-sequence-wrapper {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  aspect-ratio: 1.0666;
+  height: 100%;
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
@@ -475,7 +476,7 @@ a {
 #hero-sequence-canvas {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
 }
 
@@ -487,30 +488,32 @@ a {
   position: relative;
   z-index: 2;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   height: 100%;
-  gap: 60px;
 }
 
 .hero-left-col {
-  width: 45%;
+  width: 100%;
+  max-width: 580px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   text-align: left;
   will-change: transform;
+  z-index: 3;
+  padding: 50px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(15, 23, 42, 0.45) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4), inset 1px 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .hero-right-col {
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  will-change: transform;
+  display: none;
 }
 
 .hero-avatar-details {
@@ -532,7 +535,7 @@ a {
 
 .hero-eyebrow {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.25em;
   color: var(--accent-amber);
@@ -1726,18 +1729,36 @@ a {
   
   /* Hero */
   .hero-container {
-    padding: 120px 24px 80px 24px !important;
+    padding: 40px 24px 80px 24px !important;
     display: flex !important;
-    flex-direction: column-reverse !important; /* Stack avatar on top, text below */
-    gap: 40px !important;
+    flex-direction: column-reverse !important; /* Stack details block above text on mobile */
+    gap: 30px !important;
     text-align: center !important;
     height: auto !important;
     justify-content: center !important;
     align-items: center !important;
   }
   
-  .hero-left-col, .hero-right-col {
+  .hero-left-col {
+    background: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    align-items: center !important;
     text-align: center !important;
+  }
+
+  .hero-left-col .hero-eyebrow {
+    display: none !important;
+  }
+
+  .hero-right-col {
+    display: flex !important;
+    flex-direction: column !important;
     align-items: center !important;
     width: 100% !important;
   }

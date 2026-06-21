@@ -63,9 +63,15 @@
 
   <!-- 1. HERO SECTION (Cinematic Establishing Shot) -->
   <section id="hero" class="hero-section">
+    <!-- Full-bleed scroll sequence canvas -->
+    <div class="hero-sequence-wrapper">
+      <canvas id="hero-sequence-canvas"></canvas>
+    </div>
+
     <div class="hero-container">
-      <!-- Left Column (Text) -->
+      <!-- Left Column (Text Overlay Card) -->
       <div class="hero-left-col" id="hero-left-col-node">
+        <span class="hero-eyebrow" id="hero-eyebrow-node">DUBAI, UAE &bull; AI AUTOMATION ARCHITECT</span>
         <h1 class="hero-title" id="hero-title-node">
           <span class="text-line"><span>Crafting Reality,</span></span>
           <span class="text-line"><span>One Algorithm</span></span>
@@ -79,11 +85,8 @@
         </a>
       </div>
 
-      <!-- Right Column (Avatar) -->
+      <!-- Right Column (Avatar details stacked below avatar on mobile) -->
       <div class="hero-right-col" id="hero-right-col-node">
-        <div class="hero-sequence-wrapper">
-          <canvas id="hero-sequence-canvas"></canvas>
-        </div>
         <div class="hero-avatar-details" id="hero-avatar-details-node">
           <span class="avatar-detail-location">DUBAI, UAE</span>
           <span class="avatar-detail-divider">&bull;</span>
