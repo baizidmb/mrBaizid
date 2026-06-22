@@ -131,62 +131,116 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   // 2.5 GLOBAL HERO SCROLL IMAGE SEQUENCE PRELOADER & RENDERER
   // ==========================================================================
-  const frameCount = 300;
-  const images = [];
+  const frameCount = 220;
+  const images = new Array(frameCount); // Holds Image objects or null
   const sequence = { frame: 0 };
   const sequenceCanvas = document.getElementById("hero-sequence-canvas");
   let renderSequenceFrame = () => {};
   
-  // Preload all 300 JPEGs in the background
-  for (let i = 1; i <= frameCount; i++) {
+  // Preload a small active window of 15 frames around the target frame index dynamically
+  const loadWindow = (activeFrame) => {
+    const bufferBefore = 5;
+    const bufferAfter = 15;
+    const start = Math.max(0, activeFrame - bufferBefore);
+    const end = Math.min(frameCount - 1, activeFrame + bufferAfter);
+    
+    // Load frames in the active buffer window
+    for (let i = start; i <= end; i++) {
+      if (!images[i]) {
+        const img = new Image();
+        const frameStr = String(i + 1).padStart(3, '0');
+        img.src = `hero-sequence/ezgif-frame-${frameStr}.jpg`;
+        images[i] = img;
+      }
+    }
+    
+    // Unload frames outside a wider threshold window to free browser decoded RAM
+    const thresholdBefore = 12;
+    const thresholdAfter = 25;
+    for (let i = 0; i < frameCount; i++) {
+      if (i < activeFrame - thresholdBefore || i > activeFrame + thresholdAfter) {
+        if (images[i]) {
+          images[i].src = ""; // Clear src to release GPU memory
+          images[i] = null;   // Remove references
+        }
+      }
+    }
+  };
+
+  // Preload first 15 frames immediately on startup so landing view is ready
+  for (let i = 0; i < 15; i++) {
     const img = new Image();
-    const frameStr = String(i).padStart(3, '0');
+    const frameStr = String(i + 1).padStart(3, '0');
     img.src = `hero-sequence/ezgif-frame-${frameStr}.jpg`;
-    images.push(img);
+    images[i] = img;
   }
 
   if (sequenceCanvas) {
     const ctx = sequenceCanvas.getContext("2d");
     
-    renderSequenceFrame = () => {
-      const img = images[sequence.frame];
-      if (img && img.complete) {
-        const imgWidth = img.naturalWidth;
-        const imgHeight = img.naturalHeight;
-        if (imgWidth === 0 || imgHeight === 0) return;
-        
-        const canvasWidth = sequenceCanvas.width;
-        const canvasHeight = sequenceCanvas.height;
-        
-        const imgRatio = imgWidth / imgHeight;
-        const canvasRatio = canvasWidth / canvasHeight;
-        
-        let drawWidth, drawHeight, offsetX, offsetY;
-        const isMobile = window.innerWidth <= 900;
-        
-        if (isMobile) {
-          // Do not cut vertically, remove exactly 20% from each side horizontally
+    const drawCanvasImage = (img) => {
+      const imgWidth = img.naturalWidth;
+      const imgHeight = img.naturalHeight;
+      if (imgWidth === 0 || imgHeight === 0) return;
+      
+      const canvasWidth = sequenceCanvas.width;
+      const canvasHeight = sequenceCanvas.height;
+      
+      const imgRatio = imgWidth / imgHeight;
+      const canvasRatio = canvasWidth / canvasHeight;
+      
+      let drawWidth, drawHeight, offsetX, offsetY;
+      const isMobile = window.innerWidth <= 900;
+      
+      if (isMobile) {
+        // Crop 20% horizontally from each side on mobile
+        drawHeight = canvasHeight;
+        drawWidth = canvasHeight * imgRatio;
+        offsetX = (canvasWidth - drawWidth) / 2;
+        offsetY = 0;
+      } else {
+        if (imgRatio > canvasRatio) {
           drawHeight = canvasHeight;
           drawWidth = canvasHeight * imgRatio;
           offsetX = (canvasWidth - drawWidth) / 2;
           offsetY = 0;
         } else {
-          // Standard cover fit for desktop viewports
-          if (imgRatio > canvasRatio) {
-            drawHeight = canvasHeight;
-            drawWidth = canvasHeight * imgRatio;
-            offsetX = (canvasWidth - drawWidth) / 2;
-            offsetY = 0;
-          } else {
-            drawWidth = canvasWidth;
-            drawHeight = canvasWidth / imgRatio;
-            offsetX = 0;
-            offsetY = (canvasHeight - drawHeight) / 2;
+          drawWidth = canvasWidth;
+          drawHeight = canvasWidth / imgRatio;
+          offsetX = 0;
+          offsetY = (canvasHeight - drawHeight) / 2;
+        }
+      }
+      
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    };
+
+    renderSequenceFrame = () => {
+      const frameIndex = sequence.frame;
+      loadWindow(frameIndex);
+      
+      const img = images[frameIndex];
+      if (img && img.complete && img.naturalWidth > 0) {
+        drawCanvasImage(img);
+      } else {
+        // Fallback: draw nearest loaded frame to prevent visual blank flashes
+        let fallbackImg = null;
+        for (let offset = 1; offset < 20; offset++) {
+          const prevFrame = images[frameIndex - offset];
+          if (prevFrame && prevFrame.complete && prevFrame.naturalWidth > 0) {
+            fallbackImg = prevFrame;
+            break;
+          }
+          const nextFrame = images[frameIndex + offset];
+          if (nextFrame && nextFrame.complete && nextFrame.naturalWidth > 0) {
+            fallbackImg = nextFrame;
+            break;
           }
         }
-        
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+        if (fallbackImg) {
+          drawCanvasImage(fallbackImg);
+        }
       }
     };
 
@@ -197,7 +251,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Render first frame as soon as it is loaded
-    images[0].onload = renderSequenceFrame;
+    if (images[0]) {
+      images[0].onload = renderSequenceFrame;
+    }
     window.addEventListener('resize', resizeSequenceCanvas);
     resizeSequenceCanvas();
   }
