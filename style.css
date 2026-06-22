@@ -1976,12 +1976,29 @@ a {
    MOBILE HERO LAYOUT REFINE (MAX-WIDTH: 768PX)
    ========================================================================== */
 @media (max-width: 768px) {
+  body {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .nav {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
   .hero-section {
     height: auto !important;
     min-height: 0 !important;
     display: block !important;
-    padding-top: 110px !important;
+    margin-top: -10px !important; /* Flush positioning */
+    padding-top: 0 !important; /* Remove gap */
     padding-bottom: 40px !important;
+    gap: 0 !important;
+  }
+  
+  .hero-container {
+    margin-top: 0 !important;
+    gap: 0 !important;
   }
   
   .hero-sequence-wrapper {
