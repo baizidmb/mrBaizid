@@ -26,54 +26,108 @@ document.addEventListener('DOMContentLoaded', () => {
   const scrollProgress = document.getElementById('scroll-progress');
   const mainNav = document.getElementById('main-nav');
 
-  const bgFrameCount = 277;
-  const bgImages = [];
+  const bgFrameCount = 204;
+  const bgImages = new Array(bgFrameCount); // Holds Image objects or null
   const bgSequenceCanvas = document.getElementById("global-bg-sequence-canvas");
   let renderBgSequenceFrame = () => {};
 
-  // Preload all 277 JPEGs in the background
-  for (let i = 1; i <= bgFrameCount; i++) {
+  // Aggressive memory cache loader for large 4K PNG background frames
+  const loadBgWindow = (activeFrame) => {
+    // Keep a very tight window (only 7 frames total) to prevent RAM OOM crashes
+    const bufferBefore = 2;
+    const bufferAfter = 4;
+    const start = Math.max(0, activeFrame - bufferBefore);
+    const end = Math.min(bgFrameCount - 1, activeFrame + bufferAfter);
+    
+    // Load frames in the active buffer window
+    for (let i = start; i <= end; i++) {
+      if (!bgImages[i]) {
+        const img = new Image();
+        const frameStr = String(i + 1).padStart(3, '0');
+        img.src = `bg-sequence/frame_${frameStr}.png`;
+        bgImages[i] = img;
+      }
+    }
+    
+    // Unload frames outside a strict threshold (12 frames maximum in memory)
+    const thresholdBefore = 4;
+    const thresholdAfter = 8;
+    for (let i = 0; i < bgFrameCount; i++) {
+      if (i < activeFrame - thresholdBefore || i > activeFrame + thresholdAfter) {
+        if (bgImages[i]) {
+          bgImages[i].src = ""; // Clear src to release GPU decoded memory
+          bgImages[i] = null;   // Remove references
+        }
+      }
+    }
+  };
+
+  // Preload first 5 background frames immediately so it's ready when the user scrolls past hero
+  for (let i = 0; i < 5; i++) {
     const img = new Image();
-    const frameStr = String(i).padStart(3, '0');
-    img.src = `bg-sequence/ezgif-frame-${frameStr}.jpg`;
-    bgImages.push(img);
+    const frameStr = String(i + 1).padStart(3, '0');
+    img.src = `bg-sequence/frame_${frameStr}.png`;
+    bgImages[i] = img;
   }
 
   if (bgSequenceCanvas) {
     const ctx = bgSequenceCanvas.getContext("2d");
 
+    const drawBgCanvasImage = (img) => {
+      const imgWidth = img.naturalWidth;
+      const imgHeight = img.naturalHeight;
+      if (imgWidth === 0 || imgHeight === 0) return;
+
+      const canvasWidth = bgSequenceCanvas.width;
+      const canvasHeight = bgSequenceCanvas.height;
+
+      const imgRatio = imgWidth / imgHeight;
+      const canvasRatio = canvasWidth / canvasHeight;
+
+      let drawWidth, drawHeight, offsetX, offsetY;
+
+      // Cover fit for background sequence
+      if (imgRatio > canvasRatio) {
+        drawHeight = canvasHeight;
+        drawWidth = canvasHeight * imgRatio;
+        offsetX = (canvasWidth - drawWidth) / 2;
+        offsetY = 0;
+      } else {
+        drawWidth = canvasWidth;
+        drawHeight = canvasWidth / imgRatio;
+        offsetX = 0;
+        offsetY = (canvasHeight - drawHeight) / 2;
+      }
+
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    };
+
     renderBgSequenceFrame = (scrollPercent) => {
       const frameIndex = Math.min(bgFrameCount - 1, Math.floor(scrollPercent * bgFrameCount));
-      const img = bgImages[frameIndex];
+      loadBgWindow(frameIndex);
       
-      if (img && img.complete) {
-        const imgWidth = img.naturalWidth;
-        const imgHeight = img.naturalHeight;
-        if (imgWidth === 0 || imgHeight === 0) return;
-
-        const canvasWidth = bgSequenceCanvas.width;
-        const canvasHeight = bgSequenceCanvas.height;
-
-        const imgRatio = imgWidth / imgHeight;
-        const canvasRatio = canvasWidth / canvasHeight;
-
-        let drawWidth, drawHeight, offsetX, offsetY;
-
-        // Cover fit for background sequence
-        if (imgRatio > canvasRatio) {
-          drawHeight = canvasHeight;
-          drawWidth = canvasHeight * imgRatio;
-          offsetX = (canvasWidth - drawWidth) / 2;
-          offsetY = 0;
-        } else {
-          drawWidth = canvasWidth;
-          drawHeight = canvasWidth / imgRatio;
-          offsetX = 0;
-          offsetY = (canvasHeight - drawHeight) / 2;
+      const img = bgImages[frameIndex];
+      if (img && img.complete && img.naturalWidth > 0) {
+        drawBgCanvasImage(img);
+      } else {
+        // Fallback: draw nearest loaded frame to prevent black visual glitches
+        let fallbackImg = null;
+        for (let offset = 1; offset < 15; offset++) {
+          const prevFrame = bgImages[frameIndex - offset];
+          if (prevFrame && prevFrame.complete && prevFrame.naturalWidth > 0) {
+            fallbackImg = prevFrame;
+            break;
+          }
+          const nextFrame = bgImages[frameIndex + offset];
+          if (nextFrame && nextFrame.complete && nextFrame.naturalWidth > 0) {
+            fallbackImg = nextFrame;
+            break;
+          }
         }
-
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+        if (fallbackImg) {
+          drawBgCanvasImage(fallbackImg);
+        }
       }
     };
 
@@ -81,12 +135,25 @@ document.addEventListener('DOMContentLoaded', () => {
       bgSequenceCanvas.width = window.innerWidth;
       bgSequenceCanvas.height = window.innerHeight;
       
+      const unpinScroll = window.innerHeight * 2;
       const totalScrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = totalScrollHeight > 0 ? (window.scrollY / totalScrollHeight) : 0;
-      renderBgSequenceFrame(scrollPercent);
+      const bgRange = totalScrollHeight - unpinScroll;
+      
+      if (window.scrollY < unpinScroll) {
+        renderBgSequenceFrame(0);
+      } else {
+        const bgScrollPercent = bgRange > 0 ? Math.max(0, Math.min(1, (window.scrollY - unpinScroll) / bgRange)) : 0;
+        renderBgSequenceFrame(bgScrollPercent);
+      }
     };
 
-    bgImages[0].onload = () => renderBgSequenceFrame(0);
+    if (bgImages[0]) {
+      bgImages[0].onload = () => {
+        if (window.scrollY < window.innerHeight * 2) {
+          renderBgSequenceFrame(0);
+        }
+      };
+    }
     window.addEventListener('resize', resizeBgSequenceCanvas);
     resizeBgSequenceCanvas();
   }
@@ -112,9 +179,25 @@ document.addEventListener('DOMContentLoaded', () => {
       mainNav.classList.remove('scrolled');
     }
 
-    // Render background sequence frame
+    // Render background sequence frame & control visibility
     if (bgSequenceCanvas) {
-      renderBgSequenceFrame(scrollPercent);
+      const unpinScroll = window.innerHeight * 2; // End of pinned hero section
+      
+      if (window.scrollY < unpinScroll) {
+        bgSequenceCanvas.style.opacity = "0";
+        renderBgSequenceFrame(0);
+      } else {
+        // Fade in background canvas past the hero section
+        const fadeStartRange = window.innerHeight * 0.2; // fade in over 20% of screen height
+        const fadePercent = Math.min(1, (window.scrollY - unpinScroll) / fadeStartRange);
+        bgSequenceCanvas.style.opacity = String(fadePercent * 0.9); // max opacity 0.9
+        
+        // Calculate scroll progress starting from the unpin point to the bottom
+        const bgRange = totalHeight - unpinScroll;
+        const bgScrollPercent = bgRange > 0 ? Math.max(0, Math.min(1, (window.scrollY - unpinScroll) / bgRange)) : 0;
+        
+        renderBgSequenceFrame(bgScrollPercent);
+      }
     }
 
     // Velocity calculations
