@@ -258,12 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
       duration: 0.2
     }, 0);
 
-    // 4. Fade in the background particle canvas near the unpin segment (from 0.75 to 1.0)
-    heroScrollTl.to("#global-3d-canvas", {
-      opacity: 0.85,
-      ease: "power2.out",
-      duration: 0.25
-    }, 0.75);
+
 
     // 5. Restore nav bar background near the end (from 0.75 to 1.0)
     heroScrollTl.to("#main-nav", {
@@ -291,31 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // 3.2.1 Hero 3D Blob Scroll Parallax
-    if (window.hero3dBlob) {
-      gsap.to(window.hero3dBlob.position, {
-        x: -0.8,
-        y: -1.2,
-        z: -1.0,
-        scrollTrigger: {
-          trigger: "#hero",
-          start: "top top",
-          end: "+=200%",
-          scrub: true
-        }
-      });
-      gsap.to(window.hero3dBlob.scale, {
-        x: 0.65,
-        y: 0.65,
-        z: 0.65,
-        scrollTrigger: {
-          trigger: "#hero",
-          start: "top top",
-          end: "+=200%",
-          scrub: true
-        }
-      });
-    }
+
 
     // 3.2.5 Neural 3D Tunnel Flight Controller
     const rings = document.querySelectorAll(".tunnel-ring");
@@ -609,12 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
       duration: 0.2
     }, 0);
 
-    // 4. Fade in the background particle canvas near the unpin segment on Mobile (from 0.75 to 1.0)
-    heroScrollTlMobile.to("#global-3d-canvas", {
-      opacity: 0.85,
-      ease: "power2.out",
-      duration: 0.25
-    }, 0.75);
+
 
     // 5. Restore Main Nav near the end (Mobile)
     heroScrollTlMobile.to("#main-nav", {
@@ -740,12 +706,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 4.1 Ambient Background Color Shifting
   const bgTransitions = [
-    { trigger: "#neural-tunnel", bg: "#FAF6F0", isDark: false, accent: 0xe52e2e },
-    { trigger: "#build", bg: "#FCEEE3", isDark: false, accent: 0xa855f7 },
-    { trigger: "#avatar-story", bg: "#FCE5E5", isDark: false, accent: 0xec4899 },
-    { trigger: "#destinies", bg: "#FAF0E6", isDark: false, accent: 0xf59e0b },
-    { trigger: "#stack", bg: "#FAEFE5", isDark: false, accent: 0x3b82f6 },
-    { trigger: "#contact", bg: "#0B0A08", isDark: true, accent: 0x10b981 }
+    { trigger: "#neural-tunnel", bg: "#FAF6F0", isDark: false },
+    { trigger: "#build", bg: "#FCEEE3", isDark: false },
+    { trigger: "#avatar-story", bg: "#FCE5E5", isDark: false },
+    { trigger: "#destinies", bg: "#FAF0E6", isDark: false },
+    { trigger: "#stack", bg: "#FAEFE5", isDark: false },
+    { trigger: "#contact", bg: "#0B0A08", isDark: true }
   ];
 
   bgTransitions.forEach(trans => {
@@ -761,9 +727,6 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             document.body.classList.remove("dark-active");
           }
-          if (window.setTargetAccentColor) {
-            window.setTargetAccentColor(trans.accent);
-          }
         }
       },
       onLeaveBack: () => {
@@ -771,9 +734,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentIndex === 0) {
           // gsap.to("body", { backgroundColor: "#FAF6F0", duration: 0.8 });
           document.body.classList.remove("dark-active");
-          if (window.setTargetAccentColor) {
-            window.setTargetAccentColor(0xff6b00); // Reset to Hero amber
-          }
         } else {
           const prev = bgTransitions[currentIndex - 1];
           // gsap.to("body", { backgroundColor: prev.bg, duration: 0.8 });
@@ -781,9 +741,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add("dark-active");
           } else {
             document.body.classList.remove("dark-active");
-          }
-          if (window.setTargetAccentColor) {
-            window.setTargetAccentColor(prev.accent);
           }
         }
       }
@@ -879,195 +836,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ==========================================================================
-  // 4.5 THREE.JS INTERACTIVE 3D ANIMATIONS (GLOSSY THEME)
-  // ==========================================================================
-  
-  // Three.js Global Mouse coordinates tracking (lerped)
-  const mouse = new THREE.Vector2(0, 0);
-  const targetMouse = new THREE.Vector2(0, 0);
-  
-  window.addEventListener('mousemove', (e) => {
-    // Normalize coordinates (-1 to 1)
-    targetMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-    targetMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-  });
 
-  // Global WebGL 3D Scene representing the black hole particle swarm
-  let globalScene, globalCamera, globalRenderer, globalComposer;
-  let instancedMesh;
-  const COUNT = 20000;
-  const positions = [];
-  const dummy = new THREE.Object3D();
-  const color = new THREE.Color();
-  const target = new THREE.Vector3();
-
-  // Control variables for the black hole simulation
-  const PARAMS = {
-    scale: 48,
-    spin: 2.54,
-    accretion: 1.5,
-    warp: 2.2
-  };
-
-  // Helper stub for compatibility
-  const addControl = (id, label, min, max, val) => {
-    return PARAMS[id] !== undefined ? PARAMS[id] : val;
-  };
-
-  function initGlobal3D() {
-    const canvas = document.getElementById('global-3d-canvas');
-    if (!canvas) return;
-
-    globalScene = new THREE.Scene();
-    globalScene.fog = new THREE.FogExp2(0x000000, 0.008);
-    
-    // Camera settings optimized for black hole viewport
-    globalCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    globalCamera.position.set(0, 30, 120);
-
-    globalRenderer = new THREE.WebGLRenderer({ 
-      canvas: canvas, 
-      alpha: true, 
-      antialias: true,
-      powerPreference: "high-performance" 
-    });
-    globalRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    globalRenderer.setSize(window.innerWidth, window.innerHeight);
-
-    // Post-processing setup with UnrealBloomPass (disabled on mobile for peak performance)
-    const isMobile = window.innerWidth <= 900;
-    if (!isMobile && typeof THREE.EffectComposer !== 'undefined') {
-      globalComposer = new THREE.EffectComposer(globalRenderer);
-      globalComposer.addPass(new THREE.RenderPass(globalScene, globalCamera));
-      const bloomPass = new THREE.UnrealBloomPass(
-        new THREE.Vector2(window.innerWidth, window.innerHeight), 
-        1.5, 0.4, 0.85
-      );
-      bloomPass.strength = 1.4;
-      bloomPass.radius = 0.45;
-      bloomPass.threshold = 0.05;
-      globalComposer.addPass(bloomPass);
-    }
-
-    // Instanced Mesh for 20,000 particles using TetrahedronGeometry
-    const geometry = new THREE.TetrahedronGeometry(0.22);
-    const material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85 });
-    
-    instancedMesh = new THREE.InstancedMesh(geometry, material, COUNT);
-    instancedMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    globalScene.add(instancedMesh);
-
-    // Initialize positions randomly
-    for (let i = 0; i < COUNT; i++) {
-      positions.push(new THREE.Vector3(
-        (Math.random() - 0.5) * 200, 
-        (Math.random() - 0.5) * 200, 
-        (Math.random() - 0.5) * 200
-      ));
-      instancedMesh.setColorAt(i, color.setHex(0x00ff88));
-    }
-
-    const clock = new THREE.Clock();
-    
-    function animate() {
-      requestAnimationFrame(animate);
-      
-      const time = clock.getElapsedTime() * 0.9;
-      
-      // Lerp mouse coordinates
-      mouse.x += (targetMouse.x - mouse.x) * 0.08;
-      mouse.y += (targetMouse.y - mouse.y) * 0.08;
-
-      // Accretion Disk Physics Simulation (User Injected Logic)
-      const count = COUNT;
-      const scale = addControl("scale", "Event Horizon", 20, 200, 90);
-      const spin = addControl("spin", "Spin", 0.2, 8.0, 3.0);
-      const accretion = addControl("accretion", "Accretion Disk", 0.0, 2.0, 1.0);
-      const warp = addControl("warp", "Space Warp", 0.0, 3.0, 1.2);
-      
-      const t = time * 0.35;
-      const ga = 2.399963229728653; // Golden angle
-
-      for (let i = 0; i < COUNT; i++) {
-        const u = (i + 0.5) / count;
-        const a = i * ga;
-        
-        const band = u * 24.0 - 12.0;
-        const disk = 1.0 - Math.abs(Math.sin(band * 0.5));
-        const radius = scale * (0.08 + 1.9 * u * u);
-        
-        const swirl = a + spin * Math.log(radius + 1.0) - t * (2.0 + 3.0 * (1.0 - u));
-        
-        const grav = 1.0 / (1.0 + radius * 0.015);
-        const bend = warp * grav * grav;
-        
-        const x0 = radius * Math.cos(swirl);
-        const z0 = radius * Math.sin(swirl);
-        
-        const x = x0 + bend * z0;
-        const z = z0 - bend * x0;
-        const y = scale * 0.22 * disk * Math.sin(a * 0.17 + t * 4.0) * accretion;
-        
-        target.set(x, y, z);
-        
-        // Relativistic heat coloration (blazing orange inside to cool indigo outside)
-        const heat = 1.0 - Math.min(1.0, radius / (scale * 2.0));
-        const hue = 0.08 + 0.58 * (1.0 - heat);
-        const sat = 0.8 + 0.2 * heat;
-        const light = 0.15 + 0.55 * Math.pow(heat, 1.5);
-        
-        color.setHSL(hue, sat, light);
-
-        // Interpolate position towards target for fluid momentum
-        positions[i].lerp(target, 0.08);
-        dummy.position.copy(positions[i]);
-        dummy.updateMatrix();
-        instancedMesh.setMatrixAt(i, dummy.matrix);
-        instancedMesh.setColorAt(i, color);
-      }
-      
-      instancedMesh.instanceMatrix.needsUpdate = true;
-      if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
-
-      // Camera Scroll Orbit & Parallax
-      const totalScrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = totalScrollHeight > 0 ? (window.scrollY / totalScrollHeight) : 0;
-      
-      const targetCamX = Math.sin(scrollPercent * Math.PI * 0.5) * 45;
-      const targetCamY = 30 - scrollPercent * 90;
-      const targetCamZ = 120 - scrollPercent * 40;
-      
-      globalCamera.position.x += (targetCamX - globalCamera.position.x) * 0.05;
-      globalCamera.position.y += (targetCamY - globalCamera.position.y) * 0.05;
-      globalCamera.position.z += (targetCamZ - globalCamera.position.z) * 0.05;
-      
-      // Responsive mouse look
-      globalCamera.position.x += (mouse.x * 12 - globalCamera.position.x) * 0.05;
-      globalCamera.position.y += (mouse.y * 12 - globalCamera.position.y) * 0.05;
-      globalCamera.lookAt(new THREE.Vector3(0, -scrollPercent * 15, 0));
-
-      if (globalComposer) {
-        globalComposer.render();
-      } else {
-        globalRenderer.render(globalScene, globalCamera);
-      }
-    }
-    
-    animate();
-
-    window.addEventListener('resize', () => {
-      globalCamera.aspect = window.innerWidth / window.innerHeight;
-      globalCamera.updateProjectionMatrix();
-      globalRenderer.setSize(window.innerWidth, window.innerHeight);
-      if (globalComposer) globalComposer.setSize(window.innerWidth, window.innerHeight);
-    });
-  }
-
-  // Trigger initializations if THREE exists
-  if (typeof THREE !== 'undefined') {
-    initGlobal3D();
-  }
 
   // ==========================================================================
   // 5. MOBILE MENU CONTROL
