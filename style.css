@@ -173,13 +173,25 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 1; /* Sits behind content, above body background gradient */
+  z-index: 2; /* Sits behind content, floating above background sequence */
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.8s ease;
 }
 
-/* Ensure all content sections stack above the fixed background WebGL canvas */
+/* Global Scroll-Driven Background Image Sequence Canvas */
+.global-bg-sequence-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1; /* Sits behind content and Three.js swarm */
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* Ensure all content sections stack above the fixed background canvas elements */
 .hero-section,
 .tunnel-section,
 .build-section,
@@ -188,7 +200,7 @@ body {
 .stack-section,
 .contact-section {
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 /* iOS 27 Specular Glossy Card Overlays */

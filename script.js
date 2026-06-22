@@ -21,10 +21,75 @@ document.addEventListener('DOMContentLoaded', () => {
   gsap.ticker.lagSmoothing(0);
 
   // ==========================================================================
-  // 2. SCROLL PROGRESS INDICATOR
+  // 2. SCROLL PROGRESS INDICATOR & GLOBAL BACKGROUND SEQUENCE RENDERER
   // ==========================================================================
   const scrollProgress = document.getElementById('scroll-progress');
   const mainNav = document.getElementById('main-nav');
+
+  const bgFrameCount = 277;
+  const bgImages = [];
+  const bgSequenceCanvas = document.getElementById("global-bg-sequence-canvas");
+  let renderBgSequenceFrame = () => {};
+
+  // Preload all 277 JPEGs in the background
+  for (let i = 1; i <= bgFrameCount; i++) {
+    const img = new Image();
+    const frameStr = String(i).padStart(3, '0');
+    img.src = `bg-sequence/ezgif-frame-${frameStr}.jpg`;
+    bgImages.push(img);
+  }
+
+  if (bgSequenceCanvas) {
+    const ctx = bgSequenceCanvas.getContext("2d");
+
+    renderBgSequenceFrame = (scrollPercent) => {
+      const frameIndex = Math.min(bgFrameCount - 1, Math.floor(scrollPercent * bgFrameCount));
+      const img = bgImages[frameIndex];
+      
+      if (img && img.complete) {
+        const imgWidth = img.naturalWidth;
+        const imgHeight = img.naturalHeight;
+        if (imgWidth === 0 || imgHeight === 0) return;
+
+        const canvasWidth = bgSequenceCanvas.width;
+        const canvasHeight = bgSequenceCanvas.height;
+
+        const imgRatio = imgWidth / imgHeight;
+        const canvasRatio = canvasWidth / canvasHeight;
+
+        let drawWidth, drawHeight, offsetX, offsetY;
+
+        // Cover fit for background sequence
+        if (imgRatio > canvasRatio) {
+          drawHeight = canvasHeight;
+          drawWidth = canvasHeight * imgRatio;
+          offsetX = (canvasWidth - drawWidth) / 2;
+          offsetY = 0;
+        } else {
+          drawWidth = canvasWidth;
+          drawHeight = canvasWidth / imgRatio;
+          offsetX = 0;
+          offsetY = (canvasHeight - drawHeight) / 2;
+        }
+
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+      }
+    };
+
+    const resizeBgSequenceCanvas = () => {
+      bgSequenceCanvas.width = window.innerWidth;
+      bgSequenceCanvas.height = window.innerHeight;
+      
+      const totalScrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = totalScrollHeight > 0 ? (window.scrollY / totalScrollHeight) : 0;
+      renderBgSequenceFrame(scrollPercent);
+    };
+
+    bgImages[0].onload = () => renderBgSequenceFrame(0);
+    window.addEventListener('resize', resizeBgSequenceCanvas);
+    resizeBgSequenceCanvas();
+  }
 
   let lastScrollTime = Date.now();
   let lastScrollY = window.scrollY;
@@ -32,11 +97,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let targetScrollVelocity = 0;
 
   const handleScrollEvents = () => {
-    // Scroll progress bar
+    // Scroll progress calculations
     const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-    if (totalHeight > 0) {
-      const progress = (window.scrollY / totalHeight) * 100;
-      if (scrollProgress) scrollProgress.style.width = `${progress}%`;
+    const scrollPercent = totalHeight > 0 ? (window.scrollY / totalHeight) : 0;
+    
+    if (scrollProgress) {
+      scrollProgress.style.width = `${scrollPercent * 100}%`;
     }
 
     // Navigation toggle scrolled class
@@ -44,6 +110,11 @@ document.addEventListener('DOMContentLoaded', () => {
       mainNav.classList.add('scrolled');
     } else {
       mainNav.classList.remove('scrolled');
+    }
+
+    // Render background sequence frame
+    if (bgSequenceCanvas) {
+      renderBgSequenceFrame(scrollPercent);
     }
 
     // Velocity calculations
