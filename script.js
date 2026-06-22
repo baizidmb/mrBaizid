@@ -325,12 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
       duration: 0.25
     }, 0.75);
 
-    // 6. Subtle Parallax for hero sequence wrapper (Desktop)
-    heroScrollTl.to(".hero-sequence-wrapper", {
-      yPercent: 30,
-      ease: "none",
-      duration: 1.0
-    }, 0);
 
     // 7. Scale down and fade out hero content container (Desktop)
     heroScrollTl.to(".hero-container", {
