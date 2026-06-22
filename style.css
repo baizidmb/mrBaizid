@@ -449,11 +449,11 @@ a {
   z-index: 3;
   padding: 50px;
   border-radius: 20px;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(15, 23, 42, 0.45) 100%);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4), inset 1px 1px 0 rgba(255, 255, 255, 0.05);
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  box-shadow: none;
 }
 
 .hero-right-col {
@@ -493,9 +493,9 @@ a {
   font-weight: 800;
   line-height: 0.95;
   letter-spacing: -0.03em;
-  color: var(--text-dark);
+  color: transparent !important;
+  -webkit-text-stroke: 1.2px var(--text-dark);
   margin-bottom: 20px;
-  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.65);
 }
 
 .text-line {
@@ -509,7 +509,8 @@ a {
 }
 
 .accent-text {
-  color: var(--accent-amber);
+  color: transparent !important;
+  -webkit-text-stroke: 1.2px var(--accent-amber) !important;
 }
 
 .hero-subtitle {
@@ -589,7 +590,8 @@ a {
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.1;
-  color: var(--text-dark);
+  color: transparent !important;
+  -webkit-text-stroke: 1.2px var(--text-dark);
 }
 
 /* ==========================================================================
@@ -642,25 +644,19 @@ a {
 }
 
 .browser-frame {
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
+  background: none;
+  border: none;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: var(--panel-shadow);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .browser-header {
-  height: 42px;
-  background: rgba(255, 255, 255, 0.45);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  display: grid;
-  grid-template-columns: 120px 1fr 120px;
-  align-items: center;
-  padding: 0 16px;
+  display: none;
 }
 
 .browser-dots {
@@ -718,7 +714,7 @@ a {
   width: 100%;
   padding: 40px;
   box-sizing: border-box;
-  background: linear-gradient(to top, rgba(250, 246, 240, 0.98) 0%, rgba(250, 246, 240, 0.85) 50%, rgba(250, 246, 240, 0) 100%);
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.4) 60%, transparent 100%);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -802,9 +798,9 @@ a {
   height: 100%;
   border-radius: 12px;
   overflow: hidden;
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
-  box-shadow: var(--panel-shadow);
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 
 .avatar-slide-img {
@@ -871,7 +867,8 @@ a {
   font-family: var(--font-display);
   font-size: 38px;
   font-weight: 800;
-  color: var(--text-dark);
+  color: transparent !important;
+  -webkit-text-stroke: 1.2px var(--text-dark);
   margin-bottom: 20px;
   line-height: 1.2;
 }
@@ -948,10 +945,10 @@ a {
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
+  background: none;
+  border: none;
   border-radius: 12px;
-  box-shadow: var(--panel-shadow);
+  box-shadow: none;
   display: flex;
   align-items: center;
   padding: 36px;
@@ -959,14 +956,17 @@ a {
   backface-visibility: hidden;
   transform-style: preserve-3d;
   will-change: transform;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  transition: transform 0.4s var(--ease-out-expo);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .destiny-card:hover {
-  border-color: var(--accent-amber);
-  box-shadow: 0 25px 50px rgba(255, 107, 0, 0.08);
+  transform: translateY(-8px) scale(1.03);
+}
+
+.destiny-card:hover .destiny-title {
+  -webkit-text-stroke: 1.2px var(--accent-amber);
 }
 
 .destiny-card-glow {
@@ -998,8 +998,10 @@ a {
   font-family: var(--font-display);
   font-size: 26px;
   font-weight: 800;
-  color: var(--text-dark);
+  color: transparent !important;
+  -webkit-text-stroke: 1.2px var(--text-dark);
   letter-spacing: -0.01em;
+  transition: -webkit-text-stroke 0.4s var(--ease-out-expo);
 }
 
 .destiny-desc {
@@ -1084,18 +1086,18 @@ a {
 
 .ring-content {
   width: 330px;
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
+  background: none;
+  border: none;
   border-radius: 10px;
   padding: 20px;
   transform-style: preserve-3d;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: var(--panel-shadow);
+  box-shadow: none;
   pointer-events: auto;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .ring-content img {
@@ -1116,15 +1118,15 @@ a {
 
 .ring-hud {
   width: 280px;
-  background: rgba(255, 255, 255, 0.45);
-  border: 1px dashed rgba(255, 107, 0, 0.35);
+  background: none;
+  border: 1px dashed rgba(255, 107, 0, 0.25);
   border-radius: 8px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   pointer-events: auto;
 }
 
@@ -1173,23 +1175,26 @@ a {
 }
 
 .stack-card {
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
+  background: none;
+  border: none;
   padding: 48px;
   border-radius: 12px;
-  box-shadow: var(--panel-shadow);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   height: 280px;
   justify-content: space-between;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  transition: transform 0.4s var(--ease-out-expo);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .stack-card:hover {
-  border-color: var(--accent-amber);
-  box-shadow: 0 30px 60px rgba(255, 107, 0, 0.08);
+  transform: translateY(-8px) scale(1.03);
+}
+
+.stack-card:hover .stack-name {
+  -webkit-text-stroke: 1.2px var(--accent-amber);
 }
 
 .stack-num {
@@ -1203,8 +1208,10 @@ a {
   font-family: var(--font-display);
   font-size: 26px;
   font-weight: 800;
-  color: var(--text-dark);
+  color: transparent !important;
+  -webkit-text-stroke: 1.2px var(--text-dark);
   margin-bottom: 6px;
+  transition: -webkit-text-stroke 0.4s var(--ease-out-expo);
 }
 
 .stack-category {
@@ -1343,6 +1350,8 @@ a {
   margin-bottom: 24px;
   letter-spacing: -0.02em;
   transform: translateZ(20px);
+  color: transparent !important;
+  -webkit-text-stroke: 1.2px var(--text-dark);
 }
 
 .contact-desc {
@@ -1412,13 +1421,13 @@ a {
 
 /* 3D Cinematic Glassmorphic Form Card */
 .contact-form-container {
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
+  background: none;
+  border: none;
   padding: 56px;
   border-radius: 12px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: var(--panel-shadow);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
   transform-style: preserve-3d;
   will-change: transform;
   position: relative;
@@ -1443,7 +1452,7 @@ a {
   width: 100%;
   background: transparent;
   border: none;
-  border-bottom: 2px solid rgba(26, 25, 23, 0.15);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
   color: var(--text-dark);
   font-family: var(--font-sans);
   font-size: 15px;
