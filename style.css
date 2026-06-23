@@ -40,44 +40,41 @@
 }
 
 /* GPU Acceleration for GSAP animated elements */
-.hero-sequence-wrapper,
-.hero-container,
-#hero-scroll-node,
-#hero-left-col-node,
-#hero-right-col-node,
-#hero-title-node,
-#hero-subtitle-node,
-#hero-cta-node,
-#main-nav,
+.build-horizontal-track,
 #tunnel-container,
 .tunnel-ring,
 #build-track,
 .project-card-wrapper,
 .avatar-slide-img,
-.avatar-text-panel,
 #destiny-cylinder,
 .destiny-card,
-.stack-item,
-.stack-card,
-#contact-info-node,
-#contact-form-node,
-.contact-form-container {
+.stack-item {
   will-change: transform, opacity;
 }
 
-/* Consistent 'iOS 27' Glassmorphism Content Cards */
+/* Consistent 'iOS 27' Glassmorphism Content Cards - Low-performance overhead static elements */
 .browser-frame,
-.destiny-card,
-.ring-content,
-.stack-card,
 .contact-form-container {
   background: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)) padding-box,
               linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%) border-box !important;
   border: 1px solid transparent !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
   box-shadow: 0 40px 100px rgba(0, 0, 0, 0.35) !important;
 }
+
+/* High-performance 3D animated elements - Opaque background with zero backdrop-filter blur overhead */
+.destiny-card,
+.ring-content,
+.stack-card {
+  background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)) padding-box,
+              linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%) border-box !important;
+  border: 1px solid transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.35) !important;
+}
+
 
 /* General Body Copy Recalibration */
 p, .hero-subtitle, .card-description, .panel-desc, .destiny-desc, .stack-category, .contact-desc {

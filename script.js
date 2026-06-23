@@ -130,31 +130,45 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
     };
 
+    let lastBgFrameIndex = -1;
+    let lastDrawnBgFrameIndex = -1;
+
     renderBgSequenceFrame = (scrollPercent) => {
       if (!bgCanvasInView) return;
       const frameIndex = Math.min(bgFrameCount - 1, Math.floor(scrollPercent * bgFrameCount));
-      loadBgWindow(frameIndex);
+      
+      if (frameIndex !== lastBgFrameIndex) {
+        loadBgWindow(frameIndex);
+        lastBgFrameIndex = frameIndex;
+      }
+
+      if (frameIndex === lastDrawnBgFrameIndex) return;
       
       const img = bgImages[frameIndex];
       if (img && img.complete && img.naturalWidth > 0) {
         drawBgCanvasImage(img);
+        lastDrawnBgFrameIndex = frameIndex;
       } else {
         // Fallback: draw nearest loaded frame to prevent black visual glitches
         let fallbackImg = null;
+        let fallbackIdx = -1;
         for (let offset = 1; offset < 50; offset++) {
           const prevFrame = bgImages[frameIndex - offset];
           if (prevFrame && prevFrame.complete && prevFrame.naturalWidth > 0) {
             fallbackImg = prevFrame;
+            fallbackIdx = frameIndex - offset;
             break;
           }
           const nextFrame = bgImages[frameIndex + offset];
           if (nextFrame && nextFrame.complete && nextFrame.naturalWidth > 0) {
             fallbackImg = nextFrame;
+            fallbackIdx = frameIndex + offset;
             break;
           }
         }
-        if (fallbackImg) {
+        if (fallbackImg && fallbackIdx !== lastDrawnBgFrameIndex) {
           drawBgCanvasImage(fallbackImg);
+          lastDrawnBgFrameIndex = fallbackIdx;
         }
       }
     };
@@ -236,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         trigger: "body",
         start: () => `top -${window.innerHeight * 2}px`,
         end: "bottom bottom",
-        scrub: true,
+        scrub: 0.5,
         onUpdate: (self) => {
           renderBgSequenceFrame(self.progress);
         }
@@ -332,31 +346,45 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
     };
 
+    let lastHeroFrameIndex = -1;
+    let lastDrawnHeroFrameIndex = -1;
+
     renderSequenceFrame = () => {
       if (!heroCanvasInView) return;
       const frameIndex = sequence.frame;
-      loadWindow(frameIndex);
+      
+      if (frameIndex !== lastHeroFrameIndex) {
+        loadWindow(frameIndex);
+        lastHeroFrameIndex = frameIndex;
+      }
+
+      if (frameIndex === lastDrawnHeroFrameIndex) return;
       
       const img = images[frameIndex];
       if (img && img.complete && img.naturalWidth > 0) {
         drawCanvasImage(img);
+        lastDrawnHeroFrameIndex = frameIndex;
       } else {
         // Fallback: draw nearest loaded frame to prevent visual blank flashes
         let fallbackImg = null;
+        let fallbackIdx = -1;
         for (let offset = 1; offset < 20; offset++) {
           const prevFrame = images[frameIndex - offset];
           if (prevFrame && prevFrame.complete && prevFrame.naturalWidth > 0) {
             fallbackImg = prevFrame;
+            fallbackIdx = frameIndex - offset;
             break;
           }
           const nextFrame = images[frameIndex + offset];
           if (nextFrame && nextFrame.complete && nextFrame.naturalWidth > 0) {
             fallbackImg = nextFrame;
+            fallbackIdx = frameIndex + offset;
             break;
           }
         }
-        if (fallbackImg) {
+        if (fallbackImg && fallbackIdx !== lastDrawnHeroFrameIndex) {
           drawCanvasImage(fallbackImg);
+          lastDrawnHeroFrameIndex = fallbackIdx;
         }
       }
     };
@@ -478,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
           start: "top top",
           end: "+=150%", // Tightened scroll range
           pin: true,
-          scrub: true
+          scrub: 0.5
         }
       });
 
@@ -525,7 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
           start: "top top",
           end: () => `+=${track.scrollWidth - window.innerWidth + 160}`,
           pin: true,
-          scrub: true,
+          scrub: 0.5,
           invalidateOnRefresh: true
         }
       });
@@ -570,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
           start: "top top",
           end: "+=150%", // Tightened scroll range
           pin: true,
-          scrub: true
+          scrub: 0.5
         }
       });
 
@@ -615,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
           start: "top top",
           end: "+=150%", // Tightened scroll range
           pin: true,
-          scrub: true
+          scrub: 0.5
         }
       });
     }
@@ -633,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
             trigger: "#stack",
             start: "top bottom",
             end: "bottom top",
-            scrub: true
+            scrub: 0.5
           }
         }
       );
