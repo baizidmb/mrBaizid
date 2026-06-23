@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const bgSequenceCanvas = document.getElementById("global-bg-sequence-canvas");
   let renderBgSequenceFrame = () => {};
 
-  // Aggressive memory cache loader for large 4K PNG background frames
+  // Dynamic cache loader for Lossless 4K WebP background frames
   const loadBgWindow = (activeFrame) => {
-    // Keep a very tight window (only 7 frames total) to prevent RAM OOM crashes
-    const bufferBefore = 2;
-    const bufferAfter = 4;
+    // Active buffer window (13 frames total)
+    const bufferBefore = 4;
+    const bufferAfter = 8;
     const start = Math.max(0, activeFrame - bufferBefore);
     const end = Math.min(bgFrameCount - 1, activeFrame + bufferAfter);
     
@@ -44,14 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!bgImages[i]) {
         const img = new Image();
         const frameStr = String(i + 1).padStart(3, '0');
-        img.src = `bg-sequence/frame_${frameStr}.png`;
+        img.src = `bg-sequence/frame_${frameStr}.webp`;
         bgImages[i] = img;
       }
     }
     
-    // Unload frames outside a strict threshold (12 frames maximum in memory)
-    const thresholdBefore = 4;
-    const thresholdAfter = 8;
+    // Keep-in-memory threshold (up to 75 frames in memory maximum to prevent OOM)
+    const thresholdBefore = 25;
+    const thresholdAfter = 50;
     for (let i = 0; i < bgFrameCount; i++) {
       if (i < activeFrame - thresholdBefore || i > activeFrame + thresholdAfter) {
         if (bgImages[i]) {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
   for (let i = 0; i < 5; i++) {
     const img = new Image();
     const frameStr = String(i + 1).padStart(3, '0');
-    img.src = `bg-sequence/frame_${frameStr}.png`;
+    img.src = `bg-sequence/frame_${frameStr}.webp`;
     bgImages[i] = img;
   }
 
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         // Fallback: draw nearest loaded frame to prevent black visual glitches
         let fallbackImg = null;
-        for (let offset = 1; offset < 15; offset++) {
+        for (let offset = 1; offset < 50; offset++) {
           const prevFrame = bgImages[frameIndex - offset];
           if (prevFrame && prevFrame.complete && prevFrame.naturalWidth > 0) {
             fallbackImg = prevFrame;
