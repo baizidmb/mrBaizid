@@ -39,6 +39,51 @@
   --transition-bg: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* GPU Acceleration for GSAP animated elements */
+.hero-sequence-wrapper,
+.hero-container,
+#hero-scroll-node,
+#hero-left-col-node,
+#hero-right-col-node,
+#hero-title-node,
+#hero-subtitle-node,
+#hero-cta-node,
+#main-nav,
+#tunnel-container,
+.tunnel-ring,
+#build-track,
+.project-card-wrapper,
+.avatar-slide-img,
+.avatar-text-panel,
+#destiny-cylinder,
+.destiny-card,
+.stack-item,
+.stack-card,
+#contact-info-node,
+#contact-form-node,
+.contact-form-container {
+  will-change: transform, opacity;
+}
+
+/* Consistent 'iOS 27' Glassmorphism Content Cards */
+.browser-frame,
+.destiny-card,
+.ring-content,
+.stack-card,
+.contact-form-container {
+  background: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)) padding-box,
+              linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%) border-box !important;
+  border: 1px solid transparent !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* General Body Copy Recalibration */
+p, .hero-subtitle, .card-description, .panel-desc, .destiny-desc, .stack-category, .contact-desc {
+  color: #94a3b8 !important;
+}
+
 /* Lenis Scroll Overrides & Optimization */
 html.lenis, html.lenis body {
   height: auto;
@@ -188,19 +233,19 @@ a {
   display: flex;
   align-items: center;
   transition: background-color 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(25px) saturate(220%);
-  -webkit-backdrop-filter: blur(25px) saturate(220%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(15, 23, 42, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: none;
 }
 
 .nav.scrolled {
-  background: rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 10px 30px rgba(0, 0, 0, 0.03);
-  backdrop-filter: blur(30px) saturate(240%);
-  -webkit-backdrop-filter: blur(30px) saturate(240%);
+  background: #0f172a !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
 }
 
 .nav-container {
@@ -493,8 +538,8 @@ a {
   font-weight: 800;
   line-height: 0.95;
   letter-spacing: -0.03em;
-  color: transparent !important;
-  -webkit-text-stroke: 1.2px var(--text-dark);
+  color: #ffffff !important;
+  -webkit-text-stroke: none !important;
   margin-bottom: 20px;
 }
 
@@ -509,8 +554,8 @@ a {
 }
 
 .accent-text {
-  color: transparent !important;
-  -webkit-text-stroke: 1.2px var(--accent-amber) !important;
+  color: var(--accent-amber) !important;
+  -webkit-text-stroke: none !important;
 }
 
 .hero-subtitle {
@@ -584,14 +629,15 @@ a {
   margin-bottom: 16px;
 }
 
-.section-title {
+.secti.contact-title {
   font-family: var(--font-display);
-  font-size: 54px;
+  font-size: 64px;
   font-weight: 800;
   letter-spacing: -0.02em;
-  line-height: 1.1;
-  color: transparent !important;
-  -webkit-text-stroke: 1.2px var(--text-dark);
+  line-height: 1.05;
+  color: #ffffff !important;
+  -webkit-text-stroke: none !important;
+  margin-bottom: 24px;
 }
 
 /* ==========================================================================
@@ -620,7 +666,7 @@ a {
 .build-section-header {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 80px;
+  padding: 0 120px;
   width: 100%;
   margin-bottom: 5vh;
 }
@@ -628,7 +674,7 @@ a {
 .build-horizontal-track {
   display: flex;
   gap: 60px;
-  padding: 0 80px;
+  padding: 0 120px;
   width: max-content;
   will-change: transform;
   transform-style: preserve-3d;
@@ -644,15 +690,14 @@ a {
 }
 
 .browser-frame {
-  background: none;
-  border: none;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: none;
   display: flex;
   flex-direction: column;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .browser-header {
@@ -678,8 +723,8 @@ a {
 .browser-address {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--text-muted);
-  background-color: rgba(255, 255, 255, 0.6);
+  color: #94a3b8;
+  background-color: rgba(255, 255, 255, 0.05);
   border-radius: 6px;
   padding: 4px 0;
   text-align: center;
@@ -714,7 +759,7 @@ a {
   width: 100%;
   padding: 40px;
   box-sizing: border-box;
-  background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.4) 60%, transparent 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -742,7 +787,7 @@ a {
   font-family: var(--font-display);
   font-size: 32px;
   font-weight: 800;
-  color: var(--text-dark);
+  color: #ffffff !important;
   letter-spacing: -0.01em;
 }
 
@@ -750,7 +795,7 @@ a {
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.6;
-  color: var(--text-muted);
+  color: #94a3b8;
   max-width: 600px;
 }
 
@@ -781,7 +826,7 @@ a {
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 80px;
+  padding: 0 120px;
   align-items: center;
 }
 
@@ -798,9 +843,10 @@ a {
   height: 100%;
   border-radius: 12px;
   overflow: hidden;
-  background: none;
-  border: none;
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .avatar-slide-img {
@@ -867,8 +913,8 @@ a {
   font-family: var(--font-display);
   font-size: 38px;
   font-weight: 800;
-  color: transparent !important;
-  -webkit-text-stroke: 1.2px var(--text-dark);
+  color: #ffffff !important;
+  -webkit-text-stroke: none !important;
   margin-bottom: 20px;
   line-height: 1.2;
 }
@@ -877,7 +923,7 @@ a {
   font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.7;
-  color: var(--text-muted);
+  color: #94a3b8;
 }
 
 /* ==========================================================================
@@ -904,7 +950,7 @@ a {
 .destinies-header {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 80px;
+  padding: 0 120px;
   width: 100%;
   margin-bottom: 4vh;
   text-align: center;
@@ -914,7 +960,7 @@ a {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
-  color: var(--text-muted);
+  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin-top: 8px;
@@ -945,10 +991,7 @@ a {
   left: 0;
   width: 100%;
   height: 100%;
-  background: none;
-  border: none;
   border-radius: 12px;
-  box-shadow: none;
   display: flex;
   align-items: center;
   padding: 36px;
@@ -957,8 +1000,10 @@ a {
   transform-style: preserve-3d;
   will-change: transform;
   transition: transform 0.4s var(--ease-out-expo);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .destiny-card:hover {
@@ -966,7 +1011,7 @@ a {
 }
 
 .destiny-card:hover .destiny-title {
-  -webkit-text-stroke: 1.2px var(--accent-amber);
+  color: var(--accent-amber) !important;
 }
 
 .destiny-card-glow {
@@ -975,40 +1020,45 @@ a {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 50% 0%, rgba(255, 107, 0, 0.06) 0%, transparent 60%);
+  background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255, 107, 0, 0.06), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
   pointer-events: none;
-  border-radius: 12px;
+  z-index: 1;
+}
+
+.destiny-card:hover .destiny-card-glow {
+  opacity: 1;
 }
 
 .destiny-card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  position: relative;
+  z-index: 2;
 }
 
 .destiny-year {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--accent-amber);
-  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  display: block;
 }
 
 .destiny-title {
   font-family: var(--font-display);
   font-size: 26px;
   font-weight: 800;
-  color: transparent !important;
-  -webkit-text-stroke: 1.2px var(--text-dark);
+  color: #ffffff !important;
+  -webkit-text-stroke: none !important;
   letter-spacing: -0.01em;
-  transition: -webkit-text-stroke 0.4s var(--ease-out-expo);
 }
 
 .destiny-desc {
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.6;
-  color: var(--text-muted);
+  color: #94a3b8;
 }
 
 /* ==========================================================================
@@ -1035,7 +1085,7 @@ a {
 .tunnel-header {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 80px;
+  padding: 0 120px;
   width: 100%;
   margin-bottom: 3vh;
   text-align: center;
@@ -1086,18 +1136,17 @@ a {
 
 .ring-content {
   width: 330px;
-  background: none;
-  border: none;
   border-radius: 10px;
   padding: 20px;
   transform-style: preserve-3d;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: none;
   pointer-events: auto;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .ring-content img {
@@ -1118,21 +1167,21 @@ a {
 
 .ring-hud {
   width: 280px;
-  background: none;
-  border: 1px dashed rgba(255, 107, 0, 0.25);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   pointer-events: auto;
 }
 
 .hud-code {
   font-family: var(--font-mono);
-  color: var(--text-dark);
+  color: #94a3b8;
   font-size: 11px;
   white-space: nowrap;
   overflow: hidden;
@@ -1175,43 +1224,42 @@ a {
 }
 
 .stack-card {
-  background: none;
-  border: none;
   padding: 48px;
   border-radius: 12px;
-  box-shadow: none;
   display: flex;
   flex-direction: column;
   height: 280px;
   justify-content: space-between;
   transition: transform 0.4s var(--ease-out-expo);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .stack-card:hover {
-  transform: translateY(-8px) scale(1.03);
+  transform: translateY(-10px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
 }
 
 .stack-card:hover .stack-name {
-  -webkit-text-stroke: 1.2px var(--accent-amber);
+  color: var(--accent-amber) !important;
 }
 
 .stack-num {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
-  color: rgba(26, 25, 23, 0.2);
+  color: rgba(255, 255, 255, 0.15);
 }
 
 .stack-name {
   font-family: var(--font-display);
   font-size: 26px;
   font-weight: 800;
-  color: transparent !important;
-  -webkit-text-stroke: 1.2px var(--text-dark);
+  color: #ffffff !important;
+  -webkit-text-stroke: none !important;
   margin-bottom: 6px;
-  transition: -webkit-text-stroke 0.4s var(--ease-out-expo);
 }
 
 .stack-category {
@@ -1421,13 +1469,8 @@ a {
 
 /* 3D Cinematic Glassmorphic Form Card */
 .contact-form-container {
-  background: none;
-  border: none;
   padding: 56px;
   border-radius: 12px;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: none;
   transform-style: preserve-3d;
   will-change: transform;
   position: relative;
@@ -1728,7 +1771,7 @@ a {
   /* What I Build - Stack vertically on mobile */
   .build-section {
     height: auto !important; /* Cancel scrolljacking */
-    padding: 80px 0;
+    padding: 120px 0 !important;
   }
   
   .build-sticky-container {
@@ -1769,7 +1812,7 @@ a {
   /* The Avatar - Stack vertically on mobile */
   .avatar-story-section {
     height: auto !important;
-    padding: 80px 0;
+    padding: 120px 0 !important;
   }
   
   .avatar-sticky-container {
@@ -1810,7 +1853,7 @@ a {
   /* Future Destinies - Mobile */
   .destinies-section {
     height: auto !important;
-    padding: 80px 0;
+    padding: 120px 0 !important;
   }
   .destinies-sticky-container {
     position: relative !important;
@@ -1847,7 +1890,7 @@ a {
   /* Neural Tunnel - Mobile */
   .tunnel-section {
     height: auto !important;
-    padding: 80px 0;
+    padding: 120px 0 !important;
   }
   .tunnel-sticky-container {
     position: relative !important;
@@ -1891,7 +1934,7 @@ a {
 
   /* Stack / Tools */
   .stack-section {
-    padding: 80px 0;
+    padding: 120px 0 !important;
   }
   
   .stack-grid {
@@ -1912,7 +1955,7 @@ a {
   
   /* Contact */
   .contact-section {
-    padding: 80px 0;
+    padding: 120px 0 !important;
     transform-style: flat !important;
     perspective: none !important;
     overflow: visible !important;

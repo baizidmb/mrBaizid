@@ -7,8 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   // Connect Lenis to GSAP ScrollTrigger globally
   const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    lerp: 0.08,
     smoothWheel: true,
     smoothTouch: true,
     syncTouch: true
@@ -30,6 +29,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const bgImages = new Array(bgFrameCount); // Holds Image objects or null
   const bgSequenceCanvas = document.getElementById("global-bg-sequence-canvas");
   let renderBgSequenceFrame = () => {};
+
+  // Rendering flags for Intersection Observer (Lazy Loading Canvas Render Loops)
+  let heroCanvasInView = true;
+  let bgCanvasInView = false;
+  const activeBgSections = new Set();
+
+  const canvasObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.target.id === 'hero') {
+        heroCanvasInView = entry.isIntersecting;
+      } else {
+        if (entry.isIntersecting) {
+          activeBgSections.add(entry.target.id);
+        } else {
+          activeBgSections.delete(entry.target.id);
+        }
+        bgCanvasInView = activeBgSections.size > 0;
+      }
+    });
+  }, { threshold: 0.01 });
+
+  const heroSection = document.getElementById('hero');
+  if (heroSection) canvasObserver.observe(heroSection);
+
+  ['neural-tunnel', 'build', 'avatar-story', 'destinies', 'stack', 'contact'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) canvasObserver.observe(el);
+  });
 
   // Dynamic cache loader for Lossless 4K WebP background frames
   const loadBgWindow = (activeFrame) => {
@@ -104,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     renderBgSequenceFrame = (scrollPercent) => {
+      if (!bgCanvasInView) return;
       const frameIndex = Math.min(bgFrameCount - 1, Math.floor(scrollPercent * bgFrameCount));
       loadBgWindow(frameIndex);
       
@@ -132,8 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const resizeBgSequenceCanvas = () => {
-      bgSequenceCanvas.width = window.innerWidth;
-      bgSequenceCanvas.height = window.innerHeight;
+      const isMobile = window.innerWidth <= 768;
+      const scale = isMobile ? 0.75 : 1.0;
+      bgSequenceCanvas.width = window.innerWidth * scale;
+      bgSequenceCanvas.height = window.innerHeight * scale;
       
       const unpinScroll = window.innerHeight * 2;
       const totalScrollHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -158,58 +188,61 @@ document.addEventListener('DOMContentLoaded', () => {
     resizeBgSequenceCanvas();
   }
 
-  let lastScrollTime = Date.now();
-  let lastScrollY = window.scrollY;
-  let scrollVelocity = 0;
-  let targetScrollVelocity = 0;
-
-  const handleScrollEvents = () => {
-    // Scroll progress calculations
-    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollPercent = totalHeight > 0 ? (window.scrollY / totalHeight) : 0;
-    
-    if (scrollProgress) {
-      scrollProgress.style.width = `${scrollPercent * 100}%`;
-    }
-
-    // Navigation toggle scrolled class
-    if (window.scrollY > 50) {
-      mainNav.classList.add('scrolled');
-    } else {
-      mainNav.classList.remove('scrolled');
-    }
-
-    // Render background sequence frame & control visibility
-    if (bgSequenceCanvas) {
-      const unpinScroll = window.innerHeight * 2; // End of pinned hero section
-      
-      if (window.scrollY < unpinScroll) {
-        bgSequenceCanvas.style.opacity = "0";
-        renderBgSequenceFrame(0);
-      } else {
-        // Fade in background canvas past the hero section
-        const fadeStartRange = window.innerHeight * 0.2; // fade in over 20% of screen height
-        const fadePercent = Math.min(1, (window.scrollY - unpinScroll) / fadeStartRange);
-        bgSequenceCanvas.style.opacity = String(fadePercent * 0.9); // max opacity 0.9
-        
-        // Calculate scroll progress starting from the unpin point to the bottom
-        const bgRange = totalHeight - unpinScroll;
-        const bgScrollPercent = bgRange > 0 ? Math.max(0, Math.min(1, (window.scrollY - unpinScroll) / bgRange)) : 0;
-        
-        renderBgSequenceFrame(bgScrollPercent);
+  // 1. Scroll Progress Bar (Native ScrollTrigger)
+  if (scrollProgress) {
+    gsap.to(scrollProgress, {
+      width: "100%",
+      ease: "none",
+      scrollTrigger: {
+        trigger: "body",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true
       }
-    }
+    });
+  }
 
-    // Velocity calculations
-    const now = Date.now();
-    const dt = Math.max(1, now - lastScrollTime);
-    const dy = window.scrollY - lastScrollY;
-    targetScrollVelocity = dy / dt;
-    lastScrollTime = now;
-    lastScrollY = window.scrollY;
-  };
+  // 2. Fixed Header Transition (Solid after 50px Scroll)
+  ScrollTrigger.create({
+    trigger: "body",
+    start: "top -50px",
+    onEnter: () => mainNav.classList.add('scrolled'),
+    onLeaveBack: () => mainNav.classList.remove('scrolled')
+  });
 
-  lenis.on('scroll', handleScrollEvents);
+  // 3. Global Background Sequence Canvas Opacity & Render Trigger (ScrollTrigger)
+  if (bgSequenceCanvas) {
+    // Canvas opacity fade-in past the unpin scroll position
+    gsap.fromTo(bgSequenceCanvas, 
+      { opacity: 0 },
+      {
+        opacity: 0.9,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "body",
+          start: () => `top -${window.innerHeight * 2}px`,
+          end: () => `top -${window.innerHeight * 2.2}px`, // fade in over 20% viewport height
+          scrub: true
+        }
+      }
+    );
+
+    // Scroll progress mapping for background frame rendering
+    const bgSequenceObj = { progress: 0 };
+    gsap.to(bgSequenceObj, {
+      progress: 1,
+      ease: "none",
+      scrollTrigger: {
+        trigger: "body",
+        start: () => `top -${window.innerHeight * 2}px`,
+        end: "bottom bottom",
+        scrub: true,
+        onUpdate: (self) => {
+          renderBgSequenceFrame(self.progress);
+        }
+      }
+    });
+  }
 
   // ==========================================================================
   // 2.5 GLOBAL HERO SCROLL IMAGE SEQUENCE PRELOADER & RENDERER
@@ -300,6 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     renderSequenceFrame = () => {
+      if (!heroCanvasInView) return;
       const frameIndex = sequence.frame;
       loadWindow(frameIndex);
       
@@ -328,8 +362,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const resizeSequenceCanvas = () => {
-      sequenceCanvas.width = sequenceCanvas.clientWidth || window.innerWidth;
-      sequenceCanvas.height = sequenceCanvas.clientHeight || window.innerHeight;
+      const isMobile = window.innerWidth <= 768;
+      const scale = isMobile ? 0.75 : 1.0;
+      sequenceCanvas.width = (sequenceCanvas.clientWidth || window.innerWidth) * scale;
+      sequenceCanvas.height = (sequenceCanvas.clientHeight || window.innerHeight) * scale;
       renderSequenceFrame();
     };
 
@@ -644,7 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
       y: 50,
       opacity: 0,
       duration: 1,
-      stagger: 0.15,
+      stagger: 0.2,
       ease: "power3.out",
       scrollTrigger: {
         trigger: "#build",
@@ -657,7 +693,7 @@ document.addEventListener('DOMContentLoaded', () => {
       y: 50,
       opacity: 0,
       duration: 1,
-      stagger: 0.15,
+      stagger: 0.2,
       ease: "power3.out",
       scrollTrigger: {
         trigger: "#stack",
@@ -767,7 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
       opacity: 0,
       y: 50,
       duration: 1,
-      stagger: 0.15,
+      stagger: 0.2,
       ease: "power3.out",
       scrollTrigger: {
         trigger: "#build",
@@ -781,7 +817,7 @@ document.addEventListener('DOMContentLoaded', () => {
       opacity: 0,
       y: 50,
       duration: 1,
-      stagger: 0.15,
+      stagger: 0.2,
       ease: "power3.out",
       scrollTrigger: {
         trigger: "#neural-tunnel",
@@ -795,7 +831,7 @@ document.addEventListener('DOMContentLoaded', () => {
       opacity: 0,
       y: 50,
       duration: 1,
-      stagger: 0.15,
+      stagger: 0.2,
       ease: "power3.out",
       scrollTrigger: {
         trigger: "#avatar-story",
@@ -809,7 +845,7 @@ document.addEventListener('DOMContentLoaded', () => {
       opacity: 0,
       y: 50,
       duration: 1,
-      stagger: 0.15,
+      stagger: 0.2,
       ease: "power3.out",
       scrollTrigger: {
         trigger: "#destinies",
@@ -823,7 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
       opacity: 0,
       y: 50,
       duration: 1,
-      stagger: 0.15,
+      stagger: 0.2,
       ease: "power3.out",
       scrollTrigger: {
         trigger: "#stack",
@@ -915,19 +951,19 @@ document.addEventListener('DOMContentLoaded', () => {
     duration: 1
   });
 
-  // 4.2 Contact Section Slide-Up Reveal
-  gsap.from(["#contact-info-node", "#contact-form-node"], {
-    y: 50,
-    opacity: 0,
-    duration: 1,
-    stagger: 0.15,
-    ease: "power3.out",
-    scrollTrigger: {
-      trigger: "#contact",
-      start: "top 80%",
-      toggleActions: "play none none none"
-    }
-  });
+    // 4.2 Contact Section Slide-Up Reveal
+    gsap.from(["#contact-info-node", "#contact-form-node"], {
+      y: 50,
+      opacity: 0,
+      duration: 1,
+      stagger: 0.2,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#contact",
+        start: "top 80%",
+        toggleActions: "play none none none"
+      }
+    });
 
   // 4.3 Form Submission & Loader Interactivity
   const contactForm = document.getElementById("portfolio-contact-form");
